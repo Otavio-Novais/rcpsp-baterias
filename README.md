@@ -63,6 +63,27 @@ Saída por instância: makespan, limitante inferior do solver (`bestbound`), gap
 
 As opções passadas ao solver são as genéricas dos drivers MP da AMPL (`lim:time`, `mip:bestbound`). Se o solver reclamar de alguma opção, rodem com `--verbose` e me mandem a mensagem.
 
+### Validação do modelo (HiGHS, 60 s por instância, 2 núcleos)
+
+O mesmo modelo, restrição por restrição, foi montado no HiGHS (`tools/validate_exact_highs.py`), já que o AMPL não estava disponível no ambiente de desenvolvimento. Resultados nas 10 instâncias selecionadas:
+
+| Instância | Ótimo | LP desag. | LP agreg. | LB 60 s desag. | LB 60 s agreg. | Status desag. | Status agreg. |
+|---|---:|---:|---:|---:|---:|:---:|:---:|
+| j301_1 | 43 | 38,8 | 38,6 | 43 | 43 | ótimo | ótimo |
+| j309_2 | 92 | 63,0 | 63,0 | 76 | 65 | limite | limite |
+| j3013_1 | 58 | 48,3 | 48,0 | 50 | 48 | limite | limite |
+| j3025_4 | 81 | 55,3 | 53,0 | 67 | 58 | limite | limite |
+| j3029_8 | 80 | 66,5 | 65,0 | 69 | 65 | limite | limite |
+| j3037_7 | 92 | 58,3 | 54,6 | 76 | 64 | limite | limite |
+| j3041_10 | 99 | 69,4 | 67,0 | 84 | 70 | limite | limite |
+| j3045_6 | 129 | 89,1 | 89,0 | 92 | 89 | limite | limite |
+| j3014_2 | 53 | 46,8 | 46,0 | 50 | 49 | limite | limite |
+| j3030_2 | 68 | 65,0 | 65,0 | 68 | 68 | ótimo | ótimo |
+
+- **Correção:** onde o HiGHS provou o ótimo (j301_1, j3030_2), o valor bate com a referência nas duas versões; todas as 20 soluções passaram no verificador independente; nenhum limitante inferior ultrapassou o ótimo.
+- **Força da formulação:** com o mesmo tempo, a precedência **desagregada** dá limitantes inferiores bem melhores (ex.: 84 contra 70 em j3041_10), embora tenha cerca de 4 a 9 vezes mais restrições. A relaxação linear (LP) das duas é parecida e fica longe do ótimo nas instâncias com recurso escasso — o ganho da desagregada aparece durante o branch-and-bound. É um resultado que pode entrar no artigo.
+- **HiGHS não é o solver da Etapa 5:** ele fechou só 2 das 10 instâncias em 60 s. A tabela da Etapa 5 deve usar Gurobi ou CPLEX com 600 s.
+
 ## O decoder do RCPSP
 
 O vetor de chaves tem **uma chave por atividade real** (n = 30 no J30). As atividades fictícias de início e fim são implícitas.
@@ -185,6 +206,25 @@ Justificativa: nas 120 instâncias com RS = 1,0, o ótimo coincide com o lower b
 - **Parada por alvo:** com `RCPSP_STOP_AT_TARGET`, o "tempo até o melhor" passa a ser *tempo até o ótimo*. É um critério padrão (time-to-target), mas deve ser declarado no artigo.
 - **Valores de referência:** `results/reference_*.csv` vêm do CP-SAT. Os ótimos `OPTIMAL` são provados; mesmo assim, conferir com `j30opt.sm` / `j60hrs.sm` da PSPLIB antes do artigo.
 - **Nome das instâncias:** o "j30_17" da Etapa 3 é o arquivo `j301_1.sm` (`j30_17.bas` é o nome da base geradora). Usar `j301_1` no artigo.
+
+## Status do projeto
+
+| Etapa | Entrega | Situação |
+|---|---|---|
+| 1 | Definição do problema | entregue |
+| 2 | Revisão bibliográfica | entregue (atualizar no artigo: Pellerin et al. 2020, BRKGA, RKO) |
+| 3 | Apresentação dos dados | entregue (citar a instância como `j301_1`) |
+| 4 | Proposta de solução | entregue (metaheurística passa a ser o RKO) |
+| 5 | Resultados do método exato | **código pronto e validado** — falta rodar com Gurobi/CPLEX (600 s) e gerar a tabela |
+| — | Metaheurística (RKO) | código pronto e validado — falta o experimento final (10 execuções, mesma máquina) |
+| — | Artigo SBPO + apresentação | a fazer |
+
+Próximos passos:
+
+1. Rodar `python ampl/run_exact.py --set selecao_j30 --solver gurobi --time 600` e gerar a tabela com `tools/table_exact.py` (Etapa 5).
+2. Opcional para o artigo: rodar também `--form A` e comparar com a desagregada.
+3. Rodar o RKO (`exp-j30.csv`) e o BRKGA na mesma máquina e montar a comparação com o método exato.
+4. Levar ao professor: decoder recebendo a solução por referência (reajuste das chaves após o FBI) e os dois comportamentos do framework observados (CSV com quebra de linha final; solução avaliada e não registrada ao fim do tempo).
 
 ## Créditos e licenças
 
