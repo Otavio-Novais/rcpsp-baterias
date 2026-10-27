@@ -1,0 +1,17 @@
+# binarios do RKO
+rko/Program/runTest
+rko/Program/runTest.exe
+rko/Program/**/*.o
+
+# saidas geradas pelo RKO (cada maquina gera as suas)
+rko/Results/*
+!rko/Results/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# sistema
+.DS_Store
+Thumbs.db
