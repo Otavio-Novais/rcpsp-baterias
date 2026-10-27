@@ -97,6 +97,50 @@ def cmd_scenario(a):
     print(f"{len(insts)} instancias -> {a.out}")
 
 
+def check_consistency(stats_files, runs):
+    """Confere o que o RKO reporta (Results_<MH>.csv e Solutions_<MH>.txt) com o
+    que o decoder registrou (Stats_<MH>.csv). Divergencia = chaves e makespan
+    desencontrados em alguma solucao armazenada -> resultado nao confiavel."""
+    import math
+    import re
+    problems = 0
+    checked = 0
+    for sp in stats_files:
+        d = Path(sp).parent
+        mh = Path(sp).stem.removeprefix("Stats_")
+        sol_cmax = {}
+        sol = d / f"Solutions_{mh}.txt"
+        if sol.exists():
+            for m in re.finditer(r"Instance: (\S+).*?Cmax=(\d+).*?(INFACTIVEL|FACTIVEL)",
+                                 sol.read_text(), re.S):
+                sol_cmax[m.group(1)] = int(m.group(2))
+                if m.group(3) == "INFACTIVEL":
+                    problems += 1
+                    print(f"INCONSISTENTE: {m.group(1)} {mh}: solucao final INFACTIVEL")
+        res = d / f"Results_{mh}.csv"
+        if not res.exists():
+            continue
+        for line in res.read_text().splitlines():
+            parts = line.split("\t")
+            if len(parts) < 4:
+                continue
+            inst, nr = parts[0], int(parts[2])
+            reported = [math.floor(float(x) + 1e-9) for x in parts[3:3 + nr]]
+            logged = [int(x["cmax"]) for x in runs.get((inst, mh), [])][-nr:]
+            if not logged:
+                continue
+            checked += 1
+            if reported != logged:
+                problems += 1
+                print(f"INCONSISTENTE: {inst} {mh}: RKO reporta {reported}, decoder registrou {logged}")
+            if inst in sol_cmax and sol_cmax[inst] != min(reported):
+                problems += 1
+                print(f"INCONSISTENTE: {inst} {mh}: melhor reportado {min(reported)}, "
+                      f"mas a solucao salva decodifica para {sol_cmax[inst]}")
+    if checked or problems:
+        print(f"checagem de consistencia: {checked} instancia(s) x metodo, {problems} problema(s)")
+
+
 def cmd_summary(a):
     ref = read_reference(a.ref)
     files = sorted({p for pat in a.stats for p in glob.glob(pat)})
@@ -130,6 +174,7 @@ def cmd_summary(a):
 
     if not rows:
         sys.exit("nenhuma estatistica encontrada")
+    check_consistency(files, runs)
     with open(a.out, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         w.writeheader()

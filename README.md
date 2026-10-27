@@ -85,6 +85,8 @@ Cenários prontos em `rko/Instances/RCPSP/`:
 | `Results/Solutions_<MH>.txt` | melhor cronograma (instantes de início) e verificação de factibilidade |
 | `Results/Stats_<MH>.csv` | **gerado pelo `Problem.h`**: por execução, `cmax`, `lb`, `alvo`, nº de cronogramas gerados, **cronogramas até o melhor**, tempo até o melhor e tempo total |
 
+O `tools/experiments.py summary` também **confere a consistência** entre os três arquivos: makespan por execução em `Results_` vs `Stats_`, e melhor makespan vs cronograma salvo em `Solutions_`. Qualquer divergência aparece como `INCONSISTENTE` e invalida o resultado.
+
 `schedules_to_best` permite comparar com a literatura, que usa orçamento em número de cronogramas (1.000 / 5.000 / 50.000), mesmo com o RKO parando por tempo.
 
 ## Fluxo de experimentos
@@ -133,9 +135,15 @@ Justificativa: nas 120 instâncias com RS = 1,0, o ótimo coincide com o lower b
 
 - **Parser:** `j301_1.sm` e `J30_1_1.dzn` produzem dados idênticos (C++ e Python); o LB de caminho crítico (38) bate com o `MPM-Time` do cabeçalho da PSPLIB.
 - **Referência:** o CP-SAT provou o ótimo de 475 das 480 instâncias J30 em ≤ 20 s; os 10 ótimos do grupo 1 conferem com os valores publicados na PSPLIB.
-- **Decoder:** em 30 execuções do RKO (10 instâncias × 3, 5 s), todos os cronogramas passaram na verificação de precedência e recurso, e nenhum makespan ficou abaixo do ótimo. O ótimo foi atingido em 8 das 10 instâncias; em j3025_4 e j3029_8 o melhor ficou 1 unidade acima.
+- **Decoder:** em 120 execuções (RKO, BRKGA, ILS e GA × 10 instâncias × 3, 3 s cada), todos os cronogramas passaram na verificação de precedência e recurso, nenhum makespan ficou abaixo do ótimo, e o makespan reportado pelo RKO, o registrado pelo decoder e o da solução final salva coincidiram em todos os casos. Nesse hardware (2 núcleos), os quatro métodos empataram: ótimo em 19–21 das 30 execuções, RPD médio de 0,46% a 0,56%; as diferenças só devem aparecer com mais tempo/núcleos e no J60.
 - **Variantes do decoder** (FBI e desempate, 3 instâncias difíceis × 3 execuções): resultado inconclusivo nessa escala. O FBI chega ao melhor com menos cronogramas, mas cada cronograma custa cerca de 3× mais. Vale repetir com 10 execuções na máquina final — é um resultado que pode entrar no artigo.
 - **Custo fixo do framework:** a criação do pool inicial (20 soluções + busca local) consome cerca de 20 mil decodificações antes das metaheurísticas começarem, mesmo quando o alvo é atingido logo no início.
+
+## Como o `Problem.h` interage com o framework
+
+- **Melhor solução:** toda melhoria vista pelo decoder vira a `bestSolution` do RKO, com chaves e makespan coerentes. Sem isso, uma metaheurística podia avaliar uma solução melhor e ser interrompida (fim do tempo ou alvo) antes de registrá-la, e o RKO reportava um valor pior do que o melhor cronograma encontrado.
+- **Pool:** o decoder **nunca** altera o pool de soluções. Uma versão anterior inseria a solução no pool ao atingir o alvo; isso reordenava o pool enquanto a busca local da criação do pool segurava uma referência a uma posição, deixando chaves e makespan trocados (corrigido).
+- **Criação do pool:** roda fora da região paralela, e ao final o `main` faz `bestSolution = pool[0]`. Por isso, melhorias dessa fase ficam pendentes e são sincronizadas na primeira decodificação das metaheurísticas, onde também se aplica a parada por alvo.
 
 ## Cuidados metodológicos
 
