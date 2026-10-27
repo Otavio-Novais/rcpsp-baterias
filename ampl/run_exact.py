@@ -8,9 +8,10 @@ Exemplos (a partir da raiz do repositorio):
 Para cada instancia:
   1. H = melhor makespan do SSGS com regras de prioridade (+FBI) -> limitante superior
   2. janelas [ES, LS] pelo CPM; grava ampl/data/<instancia>.dat
-  3. (opcional) relaxacao linear -> coluna LP
-  4. PLIM com limite de tempo; le makespan, limitante inferior (bestbound), tempo
-  5. confere a solucao do solver com um verificador independente do modelo
+  3. PLIM com limite de tempo (MIP start = heuristica); le makespan,
+     limitante inferior (bestbound) e tempo
+  4. confere a solucao do solver com um verificador independente do modelo
+  5. (opcional) relaxacao linear -> coluna LP
   6. grava uma linha em results/exact_<set>_<solver>_<form>.csv
 """
 from __future__ import annotations
@@ -70,15 +71,9 @@ def solve_instance(rel: str, a, ref: dict) -> dict:
         opts += " " + a.solver_options
     ampl.option[f"{a.solver}_options"] = opts
 
-    # relaxacao linear (forca da formulacao)
-    lp = ""
-    if not a.no_lp:
-        ampl.option["relax_integrality"] = 1
-        ampl.solve()
-        if ampl.solve_result == "solved":
-            lp = round(ampl.get_objective("Makespan").value(), 3)
-        ampl.option["relax_integrality"] = 0
-
+    # PLIM primeiro: os valores iniciais de x (cronograma da heuristica, no .dat)
+    # sao o MIP start. Resolver a LP antes trocaria esse ponto inicial pela
+    # solucao fracionaria da relaxacao.
     ampl.solve()
     status = ampl.solve_result                       # solved | limit | infeasible | failure ...
     t_solve = ampl.get_value("_solve_elapsed_time")
@@ -91,13 +86,22 @@ def solve_instance(rel: str, a, ref: dict) -> dict:
         bound = obj
     xs = {(int(j), int(t)): v for j, t, v in ampl.get_variable("x").get_values().to_list()}
     ok, msg = ed.verify(d, xs, obj) if xs and status in ("solved", "limit") else (False, "sem solucao")
+    nvars, ncons = int(ampl.get_value("_nvars")), int(ampl.get_value("_ncons"))
+
+    # relaxacao linear (forca da formulacao), depois do PLIM
+    lp = ""
+    if not a.no_lp:
+        ampl.option["relax_integrality"] = 1
+        ampl.solve()
+        if ampl.solve_result == "solved":
+            lp = round(ampl.get_objective("Makespan").value(), 3)
+        ampl.option["relax_integrality"] = 0
 
     cmax = round(obj) if ok else ""
     gap = round(100.0 * (obj - bound) / obj, 2) if ok and not math.isnan(bound) and obj > 0 else ""
     row.update(status="OTIMO" if status == "solved" else status.upper(), cmax=cmax,
                bound=round(bound, 3) if not math.isnan(bound) else "", gap_pct=gap, lp=lp,
-               time_s=round(t_solve, 2), vars=int(ampl.get_value("_nvars")),
-               cons=int(ampl.get_value("_ncons")), verified=msg)
+               time_s=round(t_solve, 2), vars=nvars, cons=ncons, verified=msg)
     if ok and row["ref"] != "" and row["ref_status"] == "OPTIMAL" and status == "solved" and cmax != row["ref"]:
         row["verified"] = f"ERRO: otimo {cmax} difere da referencia {row['ref']}"
     ampl.close()

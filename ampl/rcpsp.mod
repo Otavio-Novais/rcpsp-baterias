@@ -11,7 +11,7 @@
 #     agregada da Etapa 4, restricao (3).
 # =============================================================================
 
-param n integer > 2;                         # nº de atividades (com as ficticias)
+param n integer > 2;                         # numero de atividades (com as ficticias)
 set J := 1..n;                               # atividades; n = fim do projeto
 set K;                                       # recursos renovaveis
 
@@ -47,4 +47,4 @@ subject to PrecDesagregada {j in J, i in P[j], t in ES[j]..LS[j]: formul = "D"}:
 
 # (4) capacidade: atividades em execucao no periodo tau (iniciadas em [tau-p_j+1, tau])
 subject to Capacidade {k in K, tau in 0..H-1}:
-    sum {j in J: r[j,k] > 0, t in max(ES[j], tau - p[j] + 1)..min(LS[j], tau)} r[j,k] * x[j,t] <= R[k];
+    sum {j in J, t in max(ES[j], tau - p[j] + 1)..min(LS[j], tau): r[j,k] > 0} r[j,k] * x[j,t] <= R[k];
