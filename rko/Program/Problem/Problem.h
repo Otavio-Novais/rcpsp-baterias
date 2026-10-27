@@ -34,6 +34,7 @@
 #include <queue>
 #include <atomic>
 #include <limits>
+#include <omp.h>
 
 // Global Variables
 extern int n;                                       // size of the vector solution
@@ -93,6 +94,9 @@ static int stopTarget = 0;                           // alvo de parada
 
 static std::atomic<long long> nEvals(0);             // cronogramas gerados (todas as threads)
 static int runBestCmax = std::numeric_limits<int>::max(); // melhor makespan visto no decoder
+static std::atomic<double> runBestOfv(std::numeric_limits<double>::infinity()); // melhor ofv visto no decoder
+static TSol bestDec;                                 // melhor solucao vista no decoder (chaves + ofv)
+static std::atomic<bool> pendingSync(false);         // melhor solucao da criacao do pool ainda nao sincronizada
 static long long evalsToBest = 0;                    // cronogramas ate o melhor
 static double timeToBest = 0.0;                      // tempo ate o melhor (s)
 static double runStart = 0.0;                        // inicio da execucao corrente
@@ -428,6 +432,48 @@ static bool CheckSchedule(const std::vector<int> &st, int cmax)
     return true;
 }
 
+// Atualiza SOMENTE bestSolution (chaves + ofv coerentes), se melhor.
+// Nao mexer no pool aqui: UpdatePoolSolutions reordena o pool e, durante
+// CretePoolSolutions, a busca local FareyLS segura uma referencia a pool[i]
+// -> chaves e ofv ficariam trocados. Usa a mesma secao critica (sem nome) de
+// UpdatePoolSolutions; o Decoder nunca e chamado de dentro dela (sem deadlock).
+static void SetBestSolution(const TSol &s)
+{
+    #pragma omp critical
+    {
+        if (s.ofv < bestSolution.ofv)
+        {
+            bestSolution = s;
+            best_time = start_time + timeToBest;
+        }
+    }
+}
+
+// repoe em bestSolution a melhor solucao vista na criacao do pool
+static void SyncBestSolution()
+{
+    TSol tmp;
+    bool doIt = false;
+    #pragma omp critical(rcpsp_stats)
+    {
+        if (pendingSync.load())
+        {
+            tmp = bestDec;
+            pendingSync.store(false);
+            doIt = true;
+        }
+    }
+    if (!doIt) return;
+    SetBestSolution(tmp);
+#if RCPSP_STOP_AT_TARGET
+    if (runBestCmax <= stopTarget && !stop_execution.load())
+    {
+        lastEvalTime.store(get_time_in_seconds());
+        stop_execution.store(true);
+    }
+#endif
+}
+
 //----------------------- IMPLEMENTATION OF FUNCTIONS  -------------------------------
 
 /************************************************************************************
@@ -450,6 +496,9 @@ void ReadData(char nameTable[])
     // estatisticas da execucao
     nEvals.store(0);
     runBestCmax = std::numeric_limits<int>::max();
+    runBestOfv.store(std::numeric_limits<double>::infinity());
+    pendingSync.store(false);
+    bestDec.rk.clear();
     evalsToBest = 0;
     timeToBest = 0.0;
     runStart = start_time;
@@ -508,25 +557,49 @@ double Decoder(TSol s)
         // estatisticas (cronogramas gerados e cronogramas ate o melhor)
         long long c = ++nEvals;
         if ((c & 255) == 0) lastEvalTime.store(get_time_in_seconds());
-        if (cmax < runBestCmax)
+
+        // Fases do RKO: (1) criacao do pool, no thread principal, FORA da
+        // regiao paralela; ao fim dela o main faz bestSolution = pool[0];
+        // (2) metaheuristicas, DENTRO da regiao paralela.
+        const bool inMH = omp_in_parallel();
+
+        // primeira decodificacao da fase (2): repoe a melhor solucao vista
+        // na fase (1), caso pool[0] nao seja ela, e aplica a parada por alvo
+        if (inMH && pendingSync.load()) SyncBestSolution();
+
+        // Toda melhoria vista pelo decoder vira a melhor solucao global.
+        // Sem isso, uma metaheuristica pode avaliar uma solucao melhor e
+        // ser interrompida (fim do tempo/alvo) antes de registra-la, e o RKO
+        // reportaria um makespan pior do que o melhor cronograma encontrado.
+        if (ofv < runBestOfv.load())
         {
+            bool improved = false;
+            s.ofv = ofv;
             #pragma omp critical(rcpsp_stats)
             {
-                if (cmax < runBestCmax)
+                if (ofv < runBestOfv.load())
                 {
+                    runBestOfv.store(ofv);
                     runBestCmax = cmax;
                     evalsToBest = c;
                     timeToBest = get_time_in_seconds() - start_time;
+                    bestDec = s;
+                    improved = true;
                 }
+            }
+            if (improved)
+            {
+                if (inMH) SetBestSolution(s);
+                else pendingSync.store(true);
             }
         }
 
 #if RCPSP_STOP_AT_TARGET
-        // alvo atingido: registra a solucao e sinaliza o fim da execucao
-        if (cmax <= stopTarget && !stop_execution.load())
+        // alvo atingido (solucao ja registrada acima): encerra a execucao.
+        // Na fase (1) a parada fica para a sincronizacao, para nao perder
+        // a solucao quando o main sobrescrever bestSolution.
+        if (inMH && cmax <= stopTarget && !stop_execution.load())
         {
-            s.ofv = ofv;
-            UpdatePoolSolutions(s, -2);
             lastEvalTime.store(get_time_in_seconds());
             stop_execution.store(true);
         }
