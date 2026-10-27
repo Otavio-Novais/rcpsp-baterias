@@ -153,7 +153,7 @@ def cmd_summary(a):
     rows = []
     for (inst, mh), rs in sorted(runs.items()):
         name = Path(inst).name
-        r = ref.get(name)
+        r = ref.get(name) or ref.get(Path(inst).stem)
         best_ref = int(r["ub"]) if r and r["ub"] not in ("", "None") else None
         cm = [int(x["cmax"]) for x in rs]
         sched = [int(x["schedules_to_best"]) for x in rs]

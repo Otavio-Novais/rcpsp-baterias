@@ -1,0 +1,6 @@
+# metodo exato (Etapa 5)
+amplpy
+# referencia e validacao (opcionais)
+ortools
+highspy
+numpy

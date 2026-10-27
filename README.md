@@ -6,7 +6,7 @@ Autores: Cristian Madeira, Otávio Novais, Thaís Melo.
 
 O problema é resolvido de duas formas, aplicadas às mesmas instâncias da PSPLIB:
 
-1. **Método exato:** modelo PLIM tempo-indexado (Pritsker et al., 1969), em AMPL + CPLEX/Gurobi *(a implementar em `ampl/`)*.
+1. **Método exato:** modelo PLIM tempo-indexado (Pritsker et al., 1969), em AMPL (`ampl/`), executado via `amplpy` com Gurobi/CPLEX.
 2. **Metaheurística:** **RKO — Random-Key Optimizer** (Chaves et al., 2025), com um decoder específico para o RCPSP.
 
 ## Estrutura
@@ -19,8 +19,16 @@ rko/                         framework RKO (C++), copiado de RKO-solver/RKO_Cpp_
   Instances/RCPSP/j60/       480 instâncias J60 (.dzn)
   Instances/RCPSP/targets.txt  alvos de parada (ótimos de referência), gerado por tools/
   Results/                   saídas do RKO (não versionadas)
+ampl/
+  rcpsp.mod                  modelo PLIM tempo-indexado (notação da Etapa 4)
+  run_exact.py               roda o modelo via amplpy e grava results/exact_*.csv
+  data/                      .dat gerados (um por instância)
 tools/
   psplib.py                  leitura .sm/.dzn, lower bounds, parâmetros do ProGen
+  heuristics.py              SSGS, regras de prioridade, FBI, CPM, verificador
+  exact_data.py              dados do modelo exato: H, janelas [ES, LS], .dat, MIP start
+  validate_exact_highs.py    mesmo modelo no HiGHS (valida a formulação sem AMPL)
+  table_exact.py             tabela da Etapa 5 (Markdown + LaTeX)
   reference_cpsat.py         valores de referência via OR-Tools CP-SAT (validação)
   experiments.py             gera alvos e cenários; resume resultados (RPD)
 results/
@@ -29,6 +37,31 @@ results/
 ```
 
 O restante do framework RKO **não foi alterado**: a implementação do RCPSP está toda em `Problem.h`.
+
+## Método exato (Etapa 5)
+
+Modelo em `ampl/rcpsp.mod`, com a notação da Etapa 4 (atividades 1..n, com 1 e n fictícias; makespan = início de n). Em relação ao texto da Etapa 4:
+
+- **Precedência desagregada** por padrão (`--form D`): para cada arco (i, j) e período t, se j começou até t, então i começou até t − p_i. Tem relaxação linear mais forte que a agregada (restrição (3) da Etapa 4), que continua disponível com `--form A` para comparação.
+- **Horizonte H** = melhor makespan do SSGS com 7 regras de prioridade (LFT, LST, MSLK, MTS, GRPW, LPT, MIS) + FBI. É um limitante superior válido.
+- **Janelas:** x[j,t] só existe para t em [ES_j, LS_j] (CPM com horizonte H). Nas 10 instâncias selecionadas, isso dá 500–2.300 binárias, contra cerca de 5.000 com o horizonte do arquivo.
+- **MIP start:** o cronograma da heurística vai no `.dat` como valor inicial de `x`, então o solver nunca termina sem solução.
+- **Verificação:** cada solução devolvida pelo solver é conferida (precedência, recurso, makespan) por um verificador independente do modelo (`tools/heuristics.py`).
+
+```bash
+pip install amplpy
+python -m amplpy.modules install gurobi        # ou cplex / highs
+python -m amplpy.modules activate <licença>
+
+python ampl/run_exact.py --set selecao_j30 --dry-run                 # só gera os .dat e mostra o tamanho
+python ampl/run_exact.py j30/J30_1_1.dzn --solver gurobi --time 60   # teste rápido (ótimo = 43)
+python ampl/run_exact.py --set selecao_j30 --solver gurobi --time 600
+python tools/table_exact.py results/exact_selecao_j30_gurobi_D.csv    # tabela da Etapa 5
+```
+
+Saída por instância: makespan, limitante inferior do solver (`bestbound`), gap, relaxação linear (LP), status (ótimo / limite de tempo), tempo, tamanho do modelo e resultado da verificação. Opções úteis: `--form A` (precedência agregada), `--no-lp`, `--verbose` (log do solver), `--solver-options "..."` (opções extras do solver).
+
+As opções passadas ao solver são as genéricas dos drivers MP da AMPL (`lim:time`, `mip:bestbound`). Se o solver reclamar de alguma opção, rodem com `--verbose` e me mandem a mensagem.
 
 ## O decoder do RCPSP
 
