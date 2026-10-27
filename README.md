@@ -25,7 +25,7 @@ tools/
   experiments.py             gera alvos e cenários; resume resultados (RPD)
 results/
   reference_j30.csv          ótimos/limitantes de referência das 480 J30
-  reference_j60.csv          idem para as 480 J60
+  reference_j60.csv          idem para as 480 J60 (409 ótimos provados; 71 só com limitantes)
 ```
 
 O restante do framework RKO **não foi alterado**: a implementação do RCPSP está toda em `Problem.h`.
@@ -134,7 +134,7 @@ Justificativa: nas 120 instâncias com RS = 1,0, o ótimo coincide com o lower b
 ## Validação (feita em 2 núcleos, tempos apenas indicativos)
 
 - **Parser:** `j301_1.sm` e `J30_1_1.dzn` produzem dados idênticos (C++ e Python); o LB de caminho crítico (38) bate com o `MPM-Time` do cabeçalho da PSPLIB.
-- **Referência:** o CP-SAT provou o ótimo de 475 das 480 instâncias J30 em ≤ 20 s; os 10 ótimos do grupo 1 conferem com os valores publicados na PSPLIB.
+- **Referência:** o CP-SAT provou o ótimo de 475 das 480 instâncias J30 e de 409 das 480 J60 em ≤ 20 s cada; os 10 ótimos do grupo 1 do J30 conferem com os valores publicados na PSPLIB. Nas 71 J60 sem prova, a diferença média entre o limitante superior e o inferior é de 17 unidades; para elas, usar como referência o melhor valor conhecido da PSPLIB (`j60hrs.sm`). O `targets.txt` só contém ótimos provados, então a parada por alvo nunca encerra uma execução num valor não ótimo.
 - **Decoder:** em 120 execuções (RKO, BRKGA, ILS e GA × 10 instâncias × 3, 3 s cada), todos os cronogramas passaram na verificação de precedência e recurso, nenhum makespan ficou abaixo do ótimo, e o makespan reportado pelo RKO, o registrado pelo decoder e o da solução final salva coincidiram em todos os casos. Nesse hardware (2 núcleos), os quatro métodos empataram: ótimo em 19–21 das 30 execuções, RPD médio de 0,46% a 0,56%; as diferenças só devem aparecer com mais tempo/núcleos e no J60.
 - **Variantes do decoder** (FBI e desempate, 3 instâncias difíceis × 3 execuções): resultado inconclusivo nessa escala. O FBI chega ao melhor com menos cronogramas, mas cada cronograma custa cerca de 3× mais. Vale repetir com 10 execuções na máquina final — é um resultado que pode entrar no artigo.
 - **Custo fixo do framework:** a criação do pool inicial (20 soluções + busca local) consome cerca de 20 mil decodificações antes das metaheurísticas começarem, mesmo quando o alvo é atingido logo no início.
