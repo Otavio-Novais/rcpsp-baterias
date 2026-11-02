@@ -47,6 +47,16 @@ SETS = {
         "j30/J30_14_2.dzn",   # j3014_2                          NC1.5 RF1.00 RS0.5
         "j30/J30_30_2.dzn",   # j3030_2                          NC1.8 RF1.00 RS0.5
     ],
+    # selecao_j60: 5 instancias J60 de recurso escasso (RS = 0.2) com otimo
+    # provado pelo CP-SAT, uma por grupo, as de maior tempo de prova. No J30 os
+    # metodos tendem a empatar no otimo; no J60 as diferencas aparecem.
+    "selecao_j60": [
+        "j60/J60_5_4.dzn",    # j605_4    NC1.5 RF0.50 RS0.2  otimo 72
+        "j60/J60_9_4.dzn",    # j609_4    NC1.5 RF0.75 RS0.2  otimo 87
+        "j60/J60_21_4.dzn",   # j6021_4   NC1.8 RF0.50 RS0.2  otimo 95
+        "j60/J60_37_2.dzn",   # j6037_2   NC2.1 RF0.50 RS0.2  otimo 95
+        "j60/J60_41_7.dzn",   # j6041_7   NC2.1 RF0.75 RS0.2  otimo 132
+    ],
 }
 
 

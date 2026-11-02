@@ -15,3 +15,5 @@ __pycache__/
 # sistema
 .DS_Store
 Thumbs.db
+rko/Program/runTest_nofbi
+rko/Instances/RCPSP/mh-*.csv

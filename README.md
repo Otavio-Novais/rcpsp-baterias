@@ -207,6 +207,19 @@ Justificativa: nas 120 instâncias com RS = 1,0, o ótimo coincide com o lower b
 - **Valores de referência:** `results/reference_*.csv` vêm do CP-SAT. Os ótimos `OPTIMAL` são provados; mesmo assim, conferir com `j30opt.sm` / `j60hrs.sm` da PSPLIB antes do artigo.
 - **Nome das instâncias:** o "j30_17" da Etapa 3 é o arquivo `j301_1.sm` (`j30_17.bas` é o nome da base geradora). Usar `j301_1` no artigo.
 
+## Experimento das metaheurísticas (GA × BRKGA × RKO)
+
+Um único comando roda os três métodos nas seleções J30 (10 instâncias) e J60 (5 instâncias de recurso escasso, com ótimo provado), com o mesmo decoder, o mesmo tempo e as mesmas 9 threads:
+
+```bash
+python3 tools/run_metaheuristics.py              # J30 10 s, J60 30 s, 10 execuções (pior caso ~75 min)
+python3 tools/run_metaheuristics.py --fbi 0      # mesmo experimento com o decoder só com SSGS (sem FBI)
+```
+
+Saída em `results/mh_<data>/`: `summary.csv`, `comparison.md` (tabela pronta), `machine.txt` (CPU e configuração) e os logs. A checagem de consistência roda automaticamente.
+
+O "GA" aqui é o algoritmo genético do framework RKO (chaves aleatórias + o mesmo decoder), não o GA com lista de atividades descrito na Etapa 4. A comparação mede a **estratégia de busca** com a representação fixa. A versão `--fbi 0` mostra quanto do desempenho vem do decoder (FBI) e quanto da busca.
+
 ## Status do projeto
 
 | Etapa | Entrega | Situação |
@@ -216,14 +229,14 @@ Justificativa: nas 120 instâncias com RS = 1,0, o ótimo coincide com o lower b
 | 3 | Apresentação dos dados | entregue (citar a instância como `j301_1`) |
 | 4 | Proposta de solução | entregue (metaheurística passa a ser o RKO) |
 | 5 | Resultados do método exato | **código pronto e validado** — falta rodar com Gurobi/CPLEX (600 s) e gerar a tabela |
-| — | Metaheurística (RKO) | código pronto e validado — falta o experimento final (10 execuções, mesma máquina) |
+| — | Metaheurística (RKO) | código e script do experimento prontos — falta rodar `tools/run_metaheuristics.py` (com e sem FBI) na máquina final |
 | — | Artigo SBPO + apresentação | a fazer |
 
 Próximos passos:
 
 1. Rodar `python ampl/run_exact.py --set selecao_j30 --solver gurobi --time 600` e gerar a tabela com `tools/table_exact.py` (Etapa 5).
 2. Opcional para o artigo: rodar também `--form A` e comparar com a desagregada.
-3. Rodar o RKO (`exp-j30.csv`) e o BRKGA na mesma máquina e montar a comparação com o método exato.
+3. Rodar `python3 tools/run_metaheuristics.py` e `--fbi 0` na mesma máquina do Gurobi e montar a comparação com o método exato.
 4. Levar ao professor: decoder recebendo a solução por referência (reajuste das chaves após o FBI) e os dois comportamentos do framework observados (CSV com quebra de linha final; solução avaliada e não registrada ao fim do tempo).
 
 ## Créditos e licenças
