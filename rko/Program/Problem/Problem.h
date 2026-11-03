@@ -92,7 +92,11 @@ static int stopTarget = 0;                           // alvo de parada
 
 //---------------------- ESTATISTICAS POR EXECUCAO ---------------------------------
 
-static std::atomic<long long> nEvals(0);             // cronogramas gerados (todas as threads)
+static std::atomic<long long> nEvals(0);             // cronogramas gerados = decodificacoes (todas as threads)
+static std::atomic<long long> nSSGS(0);              // chamadas ao SSGS (com FBI: 1 + 2 por iteracao)
+static std::atomic<long long> poolEvals(-1);         // decodificacoes gastas na criacao do pool do RKO
+static long long maxEvals = 0;                       // orcamento de cronogramas (0 = sem limite);
+                                                     // lido da variavel de ambiente RCPSP_MAX_EVALS
 static int runBestCmax = std::numeric_limits<int>::max(); // melhor makespan visto no decoder
 static std::atomic<double> runBestOfv(std::numeric_limits<double>::infinity()); // melhor ofv visto no decoder
 static TSol bestDec;                                 // melhor solucao vista no decoder (chaves + ofv)
@@ -340,6 +344,7 @@ static int SSGS(const std::vector<int> &order, const std::vector<std::vector<int
                 std::vector<int> &st, std::vector<int> &usage)
 {
     const int H = horizonUB + 1;
+    if (!print) ++nSSGS;
     usage.assign((size_t)H * nRes, 0);
     st.assign(nAct, 0);
     std::vector<char> done(nAct, 0);
@@ -493,8 +498,14 @@ void ReadData(char nameTable[])
 
     stopTarget = std::max(lowerBound, ReadTarget(nameTable));
 
+    // orcamento de cronogramas por execucao (0 = sem limite)
+    const char *envBudget = getenv("RCPSP_MAX_EVALS");
+    maxEvals = envBudget ? atoll(envBudget) : 0;
+
     // estatisticas da execucao
     nEvals.store(0);
+    nSSGS.store(0);
+    poolEvals.store(-1);
     runBestCmax = std::numeric_limits<int>::max();
     runBestOfv.store(std::numeric_limits<double>::infinity());
     pendingSync.store(false);
@@ -505,8 +516,8 @@ void ReadData(char nameTable[])
     lastEvalTime.store(start_time);
 
     if (debug && run == 0)
-        printf("\n[RCPSP] J=%d K=%d horizonte=%d LB_CPM=%d LB_rec=%d alvo=%d",
-               nAct, nRes, horizonUB, lbCPM, lbRes, stopTarget);
+        printf("\n[RCPSP] J=%d K=%d horizonte=%d LB_CPM=%d LB_rec=%d alvo=%d orcamento=%lld",
+               nAct, nRes, horizonUB, lbCPM, lbRes, stopTarget, maxEvals);
 
     n = nAct;
 }
@@ -563,9 +574,30 @@ double Decoder(TSol s)
         // (2) metaheuristicas, DENTRO da regiao paralela.
         const bool inMH = omp_in_parallel();
 
+        // decodificacoes gastas na criacao do pool (registradas na 1a da fase 2)
+        if (inMH && poolEvals.load() < 0)
+        {
+            long long expected = -1;
+            poolEvals.compare_exchange_strong(expected, c - 1);
+        }
+
         // primeira decodificacao da fase (2): repoe a melhor solucao vista
         // na fase (1), caso pool[0] nao seja ela, e aplica a parada por alvo
         if (inMH && pendingSync.load()) SyncBestSolution();
+
+        // Orcamento esgotado: cronogramas alem do limite nao contam. Devolve um
+        // valor ruim para que nenhuma metaheuristica registre essa solucao (as
+        // threads ainda podem decodificar alguns vetores ate verem a parada).
+        if (inMH && maxEvals > 0 && c > maxEvals)
+        {
+            if (!stop_execution.load())
+            {
+                lastEvalTime.store(get_time_in_seconds());
+                stop_execution.store(true);
+            }
+            return 1e9;
+        }
+
 
         // Toda melhoria vista pelo decoder vira a melhor solucao global.
         // Sem isso, uma metaheuristica pode avaliar uma solucao melhor e
@@ -604,6 +636,13 @@ double Decoder(TSol s)
             stop_execution.store(true);
         }
 #endif
+
+        // ultimo cronograma do orcamento: encerra a execucao
+        if (inMH && maxEvals > 0 && c == maxEvals && !stop_execution.load())
+        {
+            lastEvalTime.store(get_time_in_seconds());
+            stop_execution.store(true);
+        }
     }
     else
     {
@@ -636,8 +675,9 @@ void FreeMemoryProblem()
         double tTotal = lastEvalTime.load() - runStart;
         if (debug)
         {
-            printf("\n[RCPSP] execucao %d: Cmax=%d LB=%d cronogramas=%lld ate_melhor=%lld t_melhor=%.3fs t_total=%.3fs",
-                   run, runBestCmax, lowerBound, nEvals.load(), evalsToBest, timeToBest, tTotal);
+            printf("\n[RCPSP] execucao %d: Cmax=%d LB=%d cronogramas=%lld ate_melhor=%lld t_melhor=%.3fs t_total=%.3fs ssgs=%lld pool=%lld orcamento=%lld",
+                   run, runBestCmax, lowerBound, std::min(nEvals.load(), maxEvals > 0 ? maxEvals : nEvals.load()),
+                   evalsToBest, timeToBest, tTotal, nSSGS.load(), poolEvals.load(), maxEvals);
         }
         else
         {
@@ -651,9 +691,12 @@ void FreeMemoryProblem()
             if (f)
             {
                 if (!exists)
-                    fprintf(f, "instance,mh,run,cmax,lb,target,schedules,schedules_to_best,time_to_best,time_total\n");
-                fprintf(f, "%s,%s,%d,%d,%d,%d,%lld,%lld,%.3f,%.3f\n", instance, nameMH, run,
-                        runBestCmax, lowerBound, stopTarget, nEvals.load(), evalsToBest, timeToBest, tTotal);
+                    fprintf(f, "instance,mh,run,cmax,lb,target,schedules,schedules_to_best,time_to_best,time_total,budget,ssgs_calls,pool_schedules\n");
+                // schedules = cronogramas que contaram (no maximo o orcamento)
+                long long counted = maxEvals > 0 ? std::min(nEvals.load(), maxEvals) : nEvals.load();
+                fprintf(f, "%s,%s,%d,%d,%d,%d,%lld,%lld,%.3f,%.3f,%lld,%lld,%lld\n", instance, nameMH, run,
+                        runBestCmax, lowerBound, stopTarget, counted, evalsToBest, timeToBest, tTotal,
+                        maxEvals, nSSGS.load(), poolEvals.load());
                 fclose(f);
             }
         }

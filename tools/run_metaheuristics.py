@@ -4,6 +4,7 @@ Uso (a partir da raiz do repositorio):
   python3 tools/run_metaheuristics.py                       # padrao: J30 10 s, J60 30 s, 10 execucoes
   python3 tools/run_metaheuristics.py --runs 3 --time-j30 3 --time-j60 5   # teste rapido
   python3 tools/run_metaheuristics.py --fbi 0               # decoder sem FBI (so SSGS)
+  python3 tools/run_metaheuristics.py --budget 50000        # orcamento de 50.000 cronogramas por execucao
 
 O que faz:
   1. compila o RKO, se preciso;
@@ -111,13 +112,19 @@ def main():
     ap.add_argument("--time-j30", type=int, default=10)
     ap.add_argument("--time-j60", type=int, default=30)
     ap.add_argument("--control", type=int, default=0, help="0 = parametros fixos, 1 = Q-Learning")
+    ap.add_argument("--budget", type=int, default=0,
+                    help="orcamento de cronogramas por execucao (0 = so tempo). Com orcamento, o tempo vira "
+                         "apenas um teto de seguranca (--time-cap)")
+    ap.add_argument("--time-cap", type=int, default=120, help="teto de tempo (s) quando ha --budget")
     ap.add_argument("--fbi", type=int, choices=[0, 1], default=1,
                     help="1 = decoder com FBI (padrao); 0 = so SSGS, isola o efeito da estrategia de busca")
     a = ap.parse_args()
 
     exe = build(a.fbi)
     stamp = datetime.now().strftime("%Y%m%d_%H%M")
-    out = ROOT / "results" / (f"mh_{stamp}" + ("" if a.fbi else "_semFBI"))
+    if a.budget:
+        a.time_j30 = a.time_j60 = a.time_cap
+    out = ROOT / "results" / (f"mh_{stamp}" + (f"_b{a.budget}" if a.budget else "") + ("" if a.fbi else "_semFBI"))
     out.mkdir(parents=True, exist_ok=True)
 
     # arquiva saidas antigas para nao misturar experimentos
@@ -138,13 +145,18 @@ def main():
         scen[s] = path
         worst += len(ex.SETS[s]) * a.runs * t
     worst *= len(a.methods)
-    print(f"pior caso (sem parada por otimo): {worst / 60:.0f} min — CPU: {cpu_name()}, {os.cpu_count()} threads",
+    if a.budget:
+        print(f"orcamento: {a.budget} cronogramas por execucao (teto de {a.time_cap} s)")
+    else:
+        print(f"pior caso (sem parada por otimo): {worst / 60:.0f} min", end=" ")
+    print(f" — CPU: {cpu_name()}, {os.cpu_count()} threads",
           flush=True)
 
     (out / "machine.txt").write_text(
         f"data: {datetime.now().isoformat(timespec='seconds')}\nCPU: {cpu_name()}\nthreads logicas: {os.cpu_count()}\n"
         f"sistema: {platform.platform()}\nmetodos: {' '.join(a.methods)}\nconjuntos: {' '.join(a.sets)}\n"
         f"execucoes: {a.runs}\ntempo J30: {a.time_j30} s\ntempo J60: {a.time_j60} s\ncontrole: {a.control}\n"
+        f"orcamento: {a.budget if a.budget else 'sem limite (parada por tempo)'} cronogramas por execucao\n"
         f"decoder: chaves -> lista topologica -> SSGS{' + FBI' if a.fbi else ' (sem FBI)'}; parada no otimo conhecido\n")
 
     t0 = time.time()
@@ -152,8 +164,9 @@ def main():
         for s, path in scen.items():
             print(f"[{time.time() - t0:6.0f}s] {m:6s} em {s} ...", flush=True)
             with open(out / f"log_{m}_{s}.txt", "w") as log:
+                env = dict(os.environ, RCPSP_MAX_EVALS=str(a.budget))
                 subprocess.run([str(exe), f"../Instances/RCPSP/{path.name}", str(METHODS[m]), str(a.control), "0"],
-                               cwd=PROG, check=True, stdout=log, stderr=subprocess.STDOUT)
+                               cwd=PROG, check=True, stdout=log, stderr=subprocess.STDOUT, env=env)
 
     for p in RES.iterdir():
         if p.is_file() and p.name != ".gitkeep":

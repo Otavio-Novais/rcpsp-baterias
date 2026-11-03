@@ -218,6 +218,20 @@ python3 tools/run_metaheuristics.py --fbi 0      # mesmo experimento com o decod
 
 Saída em `results/mh_<data>/`: `summary.csv`, `comparison.md` (tabela pronta), `machine.txt` (CPU e configuração) e os logs. A checagem de consistência roda automaticamente.
 
+### Orçamento fixo de cronogramas (Etapa 6)
+
+```bash
+python3 tools/run_metaheuristics.py --budget 50000            # com FBI
+python3 tools/run_metaheuristics.py --budget 50000 --fbi 0    # só SSGS
+systemd-inhibit --what=sleep:idle bash tools/rodada_etapa6.sh # as duas + Gurobi no J60 + commit/push
+```
+
+Com `--budget N`, cada execução para após N cronogramas (decodificações), somados entre as 9 threads; o tempo vira só um teto de segurança (`--time-cap`, 120 s). O orçamento é passado ao `Problem.h` pela variável de ambiente `RCPSP_MAX_EVALS`. Cronogramas avaliados além do limite não contam: o decoder devolve um valor ruim e nenhuma metaheurística os registra. O `Stats_<MH>.csv` ganha três colunas:
+
+- `budget`: o orçamento usado;
+- `ssgs_calls`: chamadas ao SSGS. Sem FBI, é igual ao número de cronogramas; com FBI, cada cronograma faz 1 + 2 SSGS por iteração do FBI (cerca de 5 por cronograma);
+- `pool_schedules`: cronogramas gastos na criação do pool do RKO, comum a todos os métodos (cerca de 10.800 no J30 e 21.600 no J60). Por isso orçamentos como 5.000 não são viáveis neste framework.
+
 O "GA" aqui é o algoritmo genético do framework RKO (chaves aleatórias + o mesmo decoder), não o GA com lista de atividades descrito na Etapa 4. A comparação mede a **estratégia de busca** com a representação fixa. A versão `--fbi 0` mostra quanto do desempenho vem do decoder (FBI) e quanto da busca.
 
 ## Status do projeto
