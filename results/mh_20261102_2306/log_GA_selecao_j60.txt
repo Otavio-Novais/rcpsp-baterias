@@ -1,0 +1,16 @@
+
+
+Instance: RCPSP/j60/J60_5_4.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j60/J60_9_4.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j60/J60_21_4.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j60/J60_37_2.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j60/J60_41_7.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 

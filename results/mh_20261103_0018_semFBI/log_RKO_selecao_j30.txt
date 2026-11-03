@@ -1,0 +1,31 @@
+
+
+Instance: RCPSP/j30/J30_1_1.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_9_2.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_13_1.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_25_4.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_29_8.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_37_7.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_41_10.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_45_6.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_14_2.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 
+
+Instance: RCPSP/j30/J30_30_2.dzn 
+Run: 1 2 3 4 5 6 7 8 9 10 

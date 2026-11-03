@@ -1,0 +1,2 @@
+instance,file,J,K,ref,ref_status,lb_trivial,H,H_rule,t_heur,binaries,form,solver,status,cmax,bound,gap_pct,lp,time_s,vars,cons,verified
+j301_1,j30/J30_1_1.dzn,30,4,43,OPTIMAL,38,46,LST,0.006,482,D,gurobi,OTIMO,43,43.0,0.0,38.784,0.04,482,910,ok

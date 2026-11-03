@@ -1,0 +1,126 @@
+nohup: ignoring input
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 43
+71 simplex iterations
+1 branching node
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 38.78402367
+250 simplex iterations
+j301_1     OTIMO    Cmax=  43 LB=    43.0 gap=   0.0% LP=  38.784 t=    0.1s ref=43 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 92
+3.12919e+06 simplex iterations
+8427 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 63
+2647 simplex iterations
+j309_2     OTIMO    Cmax=  92 LB=    92.0 gap=   0.0% LP=    63.0 t=  286.5s ref=92 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 59
+1.84451e+07 simplex iterations
+61051 branching nodes
+absmipgap=6, relmipgap=0.101695
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 48.30942275
+1550 simplex iterations
+j3013_1    LIMIT    Cmax=  59 LB=      53 gap= 10.17% LP=  48.309 t=  600.1s ref=58 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 81
+4.0625e+06 simplex iterations
+11835 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 55.28637965
+3003 simplex iterations
+j3025_4    OTIMO    Cmax=  81 LB=    81.0 gap=   0.0% LP=  55.286 t=  242.8s ref=81 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 81
+1.37533e+07 simplex iterations
+37282 branching nodes
+absmipgap=9, relmipgap=0.111111
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 66.46341463
+2618 simplex iterations
+j3029_8    LIMIT    Cmax=  81 LB=      72 gap= 11.11% LP=  66.463 t=  600.1s ref=80 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 92
+566088 simplex iterations
+1434 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 58.25759768
+2864 simplex iterations
+j3037_7    OTIMO    Cmax=  92 LB=    92.0 gap=   0.0% LP=  58.258 t=   40.9s ref=92 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 99
+2.37963e+06 simplex iterations
+8148 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 69.38556588
+3443 simplex iterations
+j3041_10   OTIMO    Cmax=  99 LB=    99.0 gap=   0.0% LP=  69.386 t=  165.7s ref=99 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 129
+6.94065e+06 simplex iterations
+19052 branching nodes
+absmipgap=5, relmipgap=0.0387597
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 89.1388399
+7701 simplex iterations
+j3045_6    LIMIT    Cmax= 129 LB=     124 gap=  3.88% LP=  89.139 t=  600.1s ref=129 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 53
+2.41674e+06 simplex iterations
+12089 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 46.83951813
+901 simplex iterations
+j3014_2    OTIMO    Cmax=  53 LB=    53.0 gap=   0.0% LP=   46.84 t=   51.0s ref=53 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 68
+144580 simplex iterations
+1973 branching nodes
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 65
+278 simplex iterations
+j3030_2    OTIMO    Cmax=  68 LB=    68.0 gap=   0.0% LP=    65.0 t=    6.0s ref=68 [ok]
+
+10 instancias -> /home/otavio/repos/rcpsp-baterias/results/exact_selecao_j30_gurobi_D.csv
