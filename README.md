@@ -228,13 +228,13 @@ O "GA" aqui é o algoritmo genético do framework RKO (chaves aleatórias + o me
 | 2 | Revisão bibliográfica | entregue (atualizar no artigo: Pellerin et al. 2020, BRKGA, RKO) |
 | 3 | Apresentação dos dados | entregue (citar a instância como `j301_1`) |
 | 4 | Proposta de solução | entregue (metaheurística passa a ser o RKO) |
-| 5 | Resultados do método exato | **código pronto e validado** — falta rodar com Gurobi/CPLEX (600 s) e gerar a tabela |
+| 5 | Resultados do método exato | **PDF pronto** (`relatorios/etapa5/etapa5.pdf`): Gurobi 600 s, 7/10 ótimos provados, Cmax = ótimo em 8/10 |
 | — | Metaheurística (RKO) | código e script do experimento prontos — falta rodar `tools/run_metaheuristics.py` (com e sem FBI) na máquina final |
 | — | Artigo SBPO + apresentação | a fazer |
 
 Próximos passos:
 
-1. Rodar `python ampl/run_exact.py --set selecao_j30 --solver gurobi --time 600` e gerar a tabela com `tools/table_exact.py` (Etapa 5).
+1. ~~Rodar o Gurobi e gerar a Etapa 5~~ — feito.
 2. Opcional para o artigo: rodar também `--form A` e comparar com a desagregada.
 3. Rodar `python3 tools/run_metaheuristics.py` e `--fbi 0` na mesma máquina do Gurobi e montar a comparação com o método exato.
 4. Levar ao professor: decoder recebendo a solução por referência (reajuste das chaves após o FBI) e os dois comportamentos do framework observados (CSV com quebra de linha final; solução avaliada e não registrada ao fim do tempo).

@@ -1,0 +1,132 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\captionsetup{font=small,labelfont=bf}
+\setlist{nosep,leftmargin=1.4em}
+\setlength{\parskip}{0.35em}
+\pagestyle{plain}
+
+\newcommand{\cmax}{C_{\max}}
+
+\begin{document}
+
+\noindent{\LARGE\bfseries Otimização do Sequenciamento na Produção de Baterias:\\[2pt] Abordagem via RCPSP}\\[6pt]
+{\bfseries Etapa 5: Resultados do Método Exato}\\
+Cristian Madeira (Pós), Otávio Novais (162962), Thaís Melo (164934)
+
+\section*{Configuração dos experimentos}
+
+O modelo de programação linear inteira mista (PLIM) tempo-indexado descrito na Etapa~4
+\cite{pritsker} foi implementado em AMPL e resolvido com o Gurobi~13.0.3, acionado pela
+biblioteca \texttt{amplpy}, com limite de 600~s por instância. Os experimentos foram executados
+em um notebook com processador Intel Core i5 de 11ª geração e 16~GB de RAM, sob Linux.
+Em relação à proposta da Etapa~4, foram adotados três refinamentos que não alteram o conjunto
+de soluções ótimas:
+
+\begin{itemize}
+  \item \textbf{Precedência desagregada:} para cada arco $(i,j)$ e período $t$,
+        $\sum_{s \le t} x_{js} \le \sum_{s \le t-p_i} x_{is}$ \cite{christofides}. Em testes
+        preliminares (HiGHS, 60~s por instância), essa forma produziu limitantes inferiores melhores que a
+        forma agregada em 8 das 10 instâncias (e iguais nas outras duas).
+  \item \textbf{Horizonte e janelas:} $H$ é o menor makespan obtido pelo SSGS com sete regras de
+        prioridade (LFT, LST, MSLK, MTS, GRPW, LPT, MIS) seguido de \emph{forward-backward
+        improvement} \cite{valls}. As variáveis $x_{jt}$ só existem para $t \in [ES_j, LS_j]$,
+        calculados pelo caminho crítico com esse $H$. Com o horizonte do arquivo ($H = 158$ em
+        j301\_1), o modelo teria cerca de 5.000 binárias; com as janelas, tem entre 482 e 2.290.
+  \item \textbf{Solução inicial:} o cronograma heurístico que define $H$ é fornecido ao solver
+        como solução inicial.
+\end{itemize}
+
+Foram usadas dez instâncias do J30 da PSPLIB \cite{psplib}: j301\_1 (a instância apresentada na
+Etapa~3, cujo arquivo-base no gerador se chama j30\_17) e nove instâncias dos grupos mais difíceis,
+uma por grupo, todas com recursos escassos ($RS = 0{,}2$ ou $0{,}5$). Nos grupos com $RS \ge 0{,}7$,
+o ótimo praticamente coincide com o limitante trivial (caminho crítico ou carga de recurso), e os
+métodos não se diferenciam. Os ótimos de referência $C^*$ foram obtidos com o CP-SAT (OR-Tools),
+com otimalidade provada. Cada solução retornada pelo Gurobi foi conferida por uma rotina
+independente do modelo (precedência, capacidade e makespan): todas foram aprovadas.
+
+\section*{Resultados}
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4.2pt}
+\caption{Resultados do modelo PLIM tempo-indexado no Gurobi (limite de 600~s por instância).}
+\label{tab:exato}
+\begin{tabular}{lccrrrrrrrrcr}
+\toprule
+Instância & $RF$ & $RS$ & Var. & Restr. & $H$ & LP & $\cmax$ & LB & Gap (\%) & $C^*$ & Status & Tempo (s) \\
+\midrule
+% linhas geradas a partir de results/exact_selecao_j30_gurobi_D.csv
+j301\_1 & 0,25 & 0,2 & 482 & 910 & 46 & 38,8 & \textbf{43} & 43 & 0,00 & 43 & ótimo & 0,08 \\
+j309\_2 & 0,75 & 0,2 & 1.879 & 3.269 & 98 & 63,0 & \textbf{92} & 92 & 0,00 & 92 & ótimo & 286,5 \\
+j3013\_1 & 1,00 & 0,2 & 1.061 & 1.865 & 64 & 48,3 & 59 & 53 & 10,17 & 58 & limite & 600,1 \\
+j3025\_4 & 0,75 & 0,2 & 1.515 & 3.196 & 89 & 55,3 & \textbf{81} & 81 & 0,00 & 81 & ótimo & 242,8 \\
+j3029\_8 & 1,00 & 0,2 & 1.454 & 3.043 & 89 & 66,5 & 81 & 72 & 11,11 & 80 & limite & 600,1 \\
+j3037\_7 & 0,50 & 0,2 & 1.603 & 3.947 & 98 & 58,3 & \textbf{92} & 92 & 0,00 & 92 & ótimo & 40,9 \\
+j3041\_10 & 0,75 & 0,2 & 1.740 & 4.253 & 106 & 69,4 & \textbf{99} & 99 & 0,00 & 99 & ótimo & 165,7 \\
+j3045\_6 & 1,00 & 0,2 & 2.290 & 5.571 & 133 & 89,1 & \textbf{129} & 124 & 3,88 & 129 & limite & 600,1 \\
+j3014\_2 & 1,00 & 0,5 & 599 & 1.126 & 56 & 46,8 & \textbf{53} & 53 & 0,00 & 53 & ótimo & 51,0 \\
+j3030\_2 & 1,00 & 0,5 & 663 & 1.496 & 70 & 65,0 & \textbf{68} & 68 & 0,00 & 68 & ótimo & 6,0 \\
+\midrule
+Média & & & & & & & & & 2,52 & & 7/10 & 259,3 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.97\textwidth}\footnotesize
+$RF$, $RS$: fator e força de recurso do gerador ProGen (todas as instâncias têm $NC \in \{1{,}5;\,1{,}8;\,2{,}1\}$).
+Var./Restr.: variáveis binárias e restrições. $H$: horizonte (heurística). LP: relaxação linear.
+$\cmax$: melhor solução inteira (em negrito quando igual a $C^*$). LB: melhor limitante inferior.
+Gap $= (\cmax - \text{LB})/\cmax$. $C^*$: ótimo de referência. Status: ótimo provado ou limite de tempo.
+\end{minipage}
+\end{table}
+
+\section*{Análise}
+
+\textbf{Qualidade das soluções.} O Gurobi provou a otimalidade em 7 das 10 instâncias, com tempos
+entre 0,08~s e 286~s (mediana de 51~s). Nas outras três, o limite de 600~s foi atingido, mas as
+soluções continuam muito boas: $\cmax$ coincide com $C^*$ em 8 das 10 instâncias, e em j3013\_1 e
+j3029\_8 fica uma unidade acima do ótimo (1,7\% e 1,3\%). Em j3045\_6 o solver encontrou o ótimo
+(129), mas não conseguiu prová-lo: o limitante inferior parou em 124 (gap de 3,9\%). O desvio
+médio em relação a $C^*$ é de 0,30\%, e o gap médio é de 2,5\% (8,4\% nas três instâncias não
+resolvidas).
+
+\textbf{Onde o modelo encontra dificuldade.} As três instâncias não resolvidas são exatamente as
+dos grupos com $RF = 1{,}0$ e $RS = 0{,}2$: todas as atividades usam os quatro recursos, e esses
+recursos são escassos, o que multiplica os conflitos de capacidade. A relaxação linear fica, em
+média, 22\% abaixo do ótimo (até 37\% em j3037\_7), o que obriga o solver a enumerar muitos nós.
+Esse afastamento, porém, não explica sozinho a dificuldade: j3037\_7 foi resolvida em 41~s,
+enquanto j3013\_1, com afastamento de 17\%, não foi. Isso indica que o fator de recurso pesa mais
+que a fraqueza da relaxação.
+
+\textbf{Contribuição da heurística.} O horizonte $H$ fornecido pelo SSGS ficou, em média, 7\%
+acima do ótimo, e o solver melhorou essa solução inicial em todas as instâncias (de 2 a 8
+unidades de tempo). Assim, as janelas reduzem o modelo sem eliminar o ótimo, e o método exato
+agrega valor sobre a heurística construtiva.
+
+\textbf{Implicações.} O modelo exato é adequado para o J30, mas não garante a prova de otimalidade
+em 600~s quando os recursos são mais disputados. Como o número de variáveis cresce com o produto
+entre o número de atividades e o horizonte, espera-se que instâncias maiores (J60) sejam ainda mais
+difíceis. A próxima etapa compara esses resultados com a metaheurística, nas mesmas instâncias e em
+instâncias J60.
+
+\vspace{-0.6em}
+{\footnotesize
+\renewcommand{\refname}{\normalsize Referências}
+\begin{thebibliography}{9}\setlength{\itemsep}{0pt}
+\bibitem{christofides} Christofides, N.; Alvarez-Valdés, R.; Tamarit, J. M. Project scheduling with resource constraints: a branch and bound approach. \emph{European Journal of Operational Research}, 29(3):262--273, 1987.
+\bibitem{psplib} Kolisch, R.; Sprecher, A. PSPLIB -- a project scheduling problem library. \emph{European Journal of Operational Research}, 96(1):205--216, 1997.
+\bibitem{pritsker} Pritsker, A. A. B.; Watters, L. J.; Wolfe, P. M. Multiproject scheduling with limited resources: a zero-one programming approach. \emph{Management Science}, 16(1):93--108, 1969.
+\bibitem{valls} Valls, V.; Ballestín, F.; Quintanilla, S. Justification and RCPSP: a technique that pays. \emph{European Journal of Operational Research}, 165(2):375--386, 2005.
+\end{thebibliography}}
+
+\end{document}

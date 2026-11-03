@@ -17,3 +17,8 @@ __pycache__/
 Thumbs.db
 rko/Program/runTest_nofbi
 rko/Instances/RCPSP/mh-*.csv
+
+# latex
+relatorios/**/*.aux
+relatorios/**/*.log
+relatorios/**/*.out
