@@ -1,0 +1,244 @@
+== inicio ter 03 nov 2026 08:25:11 -03
+Already up to date.
+compilando o RKO...
+saidas anteriores movidas para /home/otavio/repos/rcpsp-baterias/rko/Results/old_20261103_0825
+10 instancias -> /home/otavio/repos/rcpsp-baterias/rko/Instances/RCPSP/mh-selecao_j30.csv
+5 instancias -> /home/otavio/repos/rcpsp-baterias/rko/Instances/RCPSP/mh-selecao_j60.csv
+orcamento: 50000 cronogramas por execucao (teto de 120 s)
+ — CPU: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz, 8 threads
+[     0s] GA     em selecao_j30 ...
+[    15s] GA     em selecao_j60 ...
+[    59s] BRKGA  em selecao_j30 ...
+[    78s] BRKGA  em selecao_j60 ...
+[   117s] RKO    em selecao_j30 ...
+[   135s] RKO    em selecao_j60 ...
+checagem de consistencia: 45 instancia(s) x metodo, 0 problema(s)
+45 linhas -> /home/otavio/repos/rcpsp-baterias/results/mh_20261103_0825_b50000/summary.csv
+J30_13_1.dzn   BRKGA    ref=58 best=59 mean=59.8 RPDmed=3.1% hits=0/10 sched_to_best=29592 t_best=0.205s
+J30_13_1.dzn   GA       ref=58 best=59 mean=59.8 RPDmed=3.1% hits=0/10 sched_to_best=29505 t_best=0.159s
+J30_13_1.dzn   RKO      ref=58 best=60 mean=60 RPDmed=3.45% hits=0/10 sched_to_best=27822 t_best=0.188s
+J30_14_2.dzn   BRKGA    ref=53 best=53 mean=53 RPDmed=0.0% hits=10/10 sched_to_best=1088 t_best=0.012s
+J30_14_2.dzn   GA       ref=53 best=53 mean=53 RPDmed=0.0% hits=10/10 sched_to_best=2716 t_best=0.025s
+J30_14_2.dzn   RKO      ref=53 best=53 mean=53 RPDmed=0.0% hits=10/10 sched_to_best=295 t_best=0.003s
+J30_1_1.dzn    BRKGA    ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=264 t_best=0.002s
+J30_1_1.dzn    GA       ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=215 t_best=0.002s
+J30_1_1.dzn    RKO      ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=798 t_best=0.006s
+J30_25_4.dzn   BRKGA    ref=81 best=82 mean=82 RPDmed=1.23% hits=0/10 sched_to_best=17329 t_best=0.137s
+J30_25_4.dzn   GA       ref=81 best=82 mean=82 RPDmed=1.23% hits=0/10 sched_to_best=11944 t_best=0.087s
+J30_25_4.dzn   RKO      ref=81 best=82 mean=82 RPDmed=1.23% hits=0/10 sched_to_best=13829 t_best=0.121s
+J30_29_8.dzn   BRKGA    ref=80 best=81 mean=81.8 RPDmed=2.25% hits=0/10 sched_to_best=16612 t_best=0.174s
+J30_29_8.dzn   GA       ref=80 best=81 mean=81.9 RPDmed=2.38% hits=0/10 sched_to_best=13031 t_best=0.115s
+J30_29_8.dzn   RKO      ref=80 best=82 mean=82 RPDmed=2.5% hits=0/10 sched_to_best=16187 t_best=0.168s
+J30_30_2.dzn   BRKGA    ref=68 best=68 mean=68 RPDmed=0.0% hits=10/10 sched_to_best=32815 t_best=0.198s
+J30_30_2.dzn   GA       ref=68 best=68 mean=68.5 RPDmed=0.74% hits=5/10 sched_to_best=13904 t_best=0.101s
+J30_30_2.dzn   RKO      ref=68 best=68 mean=68.4 RPDmed=0.59% hits=6/10 sched_to_best=15630 t_best=0.114s
+J30_37_7.dzn   BRKGA    ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=2072 t_best=0.017s
+J30_37_7.dzn   GA       ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=500 t_best=0.004s
+J30_37_7.dzn   RKO      ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=1508 t_best=0.011s
+J30_41_10.dzn  BRKGA    ref=99 best=99 mean=99 RPDmed=0.0% hits=10/10 sched_to_best=12220 t_best=0.094s
+J30_41_10.dzn  GA       ref=99 best=99 mean=99 RPDmed=0.0% hits=10/10 sched_to_best=12758 t_best=0.099s
+J30_41_10.dzn  RKO      ref=99 best=99 mean=99 RPDmed=0.0% hits=10/10 sched_to_best=13216 t_best=0.109s
+J30_45_6.dzn   BRKGA    ref=129 best=129 mean=129 RPDmed=0.0% hits=10/10 sched_to_best=6531 t_best=0.062s
+J30_45_6.dzn   GA       ref=129 best=129 mean=129 RPDmed=0.0% hits=10/10 sched_to_best=13362 t_best=0.107s
+J30_45_6.dzn   RKO      ref=129 best=129 mean=129 RPDmed=0.0% hits=10/10 sched_to_best=7787 t_best=0.068s
+J30_9_2.dzn    BRKGA    ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=7402 t_best=0.082s
+J30_9_2.dzn    GA       ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=5665 t_best=0.05s
+J30_9_2.dzn    RKO      ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=10197 t_best=0.088s
+J60_21_4.dzn   BRKGA    ref=95 best=98 mean=98.6 RPDmed=3.79% hits=0/10 sched_to_best=37867 t_best=0.607s
+J60_21_4.dzn   GA       ref=95 best=97 mean=98 RPDmed=3.16% hits=0/10 sched_to_best=38157 t_best=0.67s
+J60_21_4.dzn   RKO      ref=95 best=98 mean=99 RPDmed=4.21% hits=0/10 sched_to_best=31319 t_best=0.562s
+J60_37_2.dzn   BRKGA    ref=95 best=97 mean=97 RPDmed=2.11% hits=0/10 sched_to_best=18228 t_best=0.364s
+J60_37_2.dzn   GA       ref=95 best=96 mean=96.9 RPDmed=2.0% hits=0/10 sched_to_best=24995 t_best=0.484s
+J60_37_2.dzn   RKO      ref=95 best=97 mean=97 RPDmed=2.11% hits=0/10 sched_to_best=26645 t_best=0.467s
+J60_41_7.dzn   BRKGA    ref=132 best=139 mean=140.4 RPDmed=6.36% hits=0/10 sched_to_best=30715 t_best=0.596s
+J60_41_7.dzn   GA       ref=132 best=137 mean=139 RPDmed=5.3% hits=0/10 sched_to_best=37024 t_best=0.759s
+J60_41_7.dzn   RKO      ref=132 best=137 mean=138.5 RPDmed=4.92% hits=0/10 sched_to_best=27607 t_best=0.547s
+J60_5_4.dzn    BRKGA    ref=72 best=74 mean=74.8 RPDmed=3.89% hits=0/10 sched_to_best=29810 t_best=0.642s
+J60_5_4.dzn    GA       ref=72 best=74 mean=74.3 RPDmed=3.19% hits=0/10 sched_to_best=34758 t_best=0.727s
+J60_5_4.dzn    RKO      ref=72 best=73 mean=74.4 RPDmed=3.33% hits=0/10 sched_to_best=26294 t_best=0.556s
+J60_9_4.dzn    BRKGA    ref=87 best=90 mean=90.8 RPDmed=4.37% hits=0/10 sched_to_best=31247 t_best=0.717s
+J60_9_4.dzn    GA       ref=87 best=90 mean=90.9 RPDmed=4.48% hits=0/10 sched_to_best=31398 t_best=0.724s
+J60_9_4.dzn    RKO      ref=87 best=90 mean=91 RPDmed=4.6% hits=0/10 sched_to_best=28718 t_best=0.652s
+
+| Instância | Ótimo | GA RPD médio (acertos) | BRKGA RPD médio (acertos) | RKO RPD médio (acertos) |
+|---|---:|---:|---:|---:|
+| J30_13_1 | 58 | 3.10% (0/10) | 3.10% (0/10) | 3.45% (0/10) |
+| J30_14_2 | 53 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_1_1 | 43 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_25_4 | 81 | 1.23% (0/10) | 1.23% (0/10) | 1.23% (0/10) |
+| J30_29_8 | 80 | 2.38% (0/10) | 2.25% (0/10) | 2.50% (0/10) |
+| J30_30_2 | 68 | 0.74% (5/10) | 0.00% (10/10) | 0.59% (6/10) |
+| J30_37_7 | 92 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_41_10 | 99 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_45_6 | 129 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_9_2 | 92 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J60_21_4 | 95 | 3.16% (0/10) | 3.79% (0/10) | 4.21% (0/10) |
+| J60_37_2 | 95 | 2.00% (0/10) | 2.11% (0/10) | 2.11% (0/10) |
+| J60_41_7 | 132 | 5.30% (0/10) | 6.36% (0/10) | 4.92% (0/10) |
+| J60_5_4 | 72 | 3.19% (0/10) | 3.89% (0/10) | 3.33% (0/10) |
+| J60_9_4 | 87 | 4.48% (0/10) | 4.37% (0/10) | 4.60% (0/10) |
+
+| Métrica | GA | BRKGA | RKO |
+|---|---:|---:|---:|
+| RPD médio (%) | 1.71 | 1.81 | 1.80 |
+| RPD da melhor execução (%) | 1.16 | 1.40 | 1.41 |
+| Execuções no ótimo | 65/150 (43%) | 70/150 (47%) | 66/150 (44%) |
+| Cronogramas até o melhor (média) | 17,995 | 18,253 | 16,523 |
+| Tempo até o melhor (s, média) | 0.27 | 0.26 | 0.24 |
+
+resultados em /home/otavio/repos/rcpsp-baterias/results/mh_20261103_0825_b50000 (tempo total 2.9 min)
+compilando o RKO sem FBI...
+saidas anteriores movidas para /home/otavio/repos/rcpsp-baterias/rko/Results/old_20261103_0828
+10 instancias -> /home/otavio/repos/rcpsp-baterias/rko/Instances/RCPSP/mh-selecao_j30.csv
+5 instancias -> /home/otavio/repos/rcpsp-baterias/rko/Instances/RCPSP/mh-selecao_j60.csv
+orcamento: 50000 cronogramas por execucao (teto de 120 s)
+ — CPU: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz, 8 threads
+[     0s] GA     em selecao_j30 ...
+[     5s] GA     em selecao_j60 ...
+[    13s] BRKGA  em selecao_j30 ...
+[    19s] BRKGA  em selecao_j60 ...
+[    26s] RKO    em selecao_j30 ...
+[    31s] RKO    em selecao_j60 ...
+checagem de consistencia: 45 instancia(s) x metodo, 0 problema(s)
+45 linhas -> /home/otavio/repos/rcpsp-baterias/results/mh_20261103_0828_b50000_semFBI/summary.csv
+J30_13_1.dzn   BRKGA    ref=58 best=60 mean=61.7 RPDmed=6.38% hits=0/10 sched_to_best=34889 t_best=0.048s
+J30_13_1.dzn   GA       ref=58 best=60 mean=61.2 RPDmed=5.52% hits=0/10 sched_to_best=33133 t_best=0.049s
+J30_13_1.dzn   RKO      ref=58 best=60 mean=61.4 RPDmed=5.86% hits=0/10 sched_to_best=28160 t_best=0.036s
+J30_14_2.dzn   BRKGA    ref=53 best=53 mean=53.9 RPDmed=1.7% hits=1/10 sched_to_best=30911 t_best=0.043s
+J30_14_2.dzn   GA       ref=53 best=54 mean=54.1 RPDmed=2.08% hits=0/10 sched_to_best=20783 t_best=0.034s
+J30_14_2.dzn   RKO      ref=53 best=54 mean=54.1 RPDmed=2.08% hits=0/10 sched_to_best=20701 t_best=0.031s
+J30_1_1.dzn    BRKGA    ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=2816 t_best=0.006s
+J30_1_1.dzn    GA       ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=3156 t_best=0.005s
+J30_1_1.dzn    RKO      ref=43 best=43 mean=43 RPDmed=0.0% hits=10/10 sched_to_best=3811 t_best=0.007s
+J30_25_4.dzn   BRKGA    ref=81 best=82 mean=83.4 RPDmed=2.96% hits=0/10 sched_to_best=30350 t_best=0.049s
+J30_25_4.dzn   GA       ref=81 best=82 mean=82.9 RPDmed=2.35% hits=0/10 sched_to_best=31755 t_best=0.051s
+J30_25_4.dzn   RKO      ref=81 best=82 mean=82.8 RPDmed=2.22% hits=0/10 sched_to_best=31661 t_best=0.045s
+J30_29_8.dzn   BRKGA    ref=80 best=82 mean=84.1 RPDmed=5.12% hits=0/10 sched_to_best=42054 t_best=0.067s
+J30_29_8.dzn   GA       ref=80 best=83 mean=83.7 RPDmed=4.63% hits=0/10 sched_to_best=36531 t_best=0.062s
+J30_29_8.dzn   RKO      ref=80 best=82 mean=83.5 RPDmed=4.38% hits=0/10 sched_to_best=30426 t_best=0.049s
+J30_30_2.dzn   BRKGA    ref=68 best=69 mean=70.3 RPDmed=3.38% hits=0/10 sched_to_best=28432 t_best=0.043s
+J30_30_2.dzn   GA       ref=68 best=69 mean=70.5 RPDmed=3.68% hits=0/10 sched_to_best=17497 t_best=0.03s
+J30_30_2.dzn   RKO      ref=68 best=70 mean=70.5 RPDmed=3.68% hits=0/10 sched_to_best=12733 t_best=0.022s
+J30_37_7.dzn   BRKGA    ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=5083 t_best=0.012s
+J30_37_7.dzn   GA       ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=5543 t_best=0.013s
+J30_37_7.dzn   RKO      ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=6734 t_best=0.015s
+J30_41_10.dzn  BRKGA    ref=99 best=99 mean=99.8 RPDmed=0.81% hits=2/10 sched_to_best=17386 t_best=0.032s
+J30_41_10.dzn  GA       ref=99 best=99 mean=99.3 RPDmed=0.3% hits=7/10 sched_to_best=27065 t_best=0.043s
+J30_41_10.dzn  RKO      ref=99 best=99 mean=99.2 RPDmed=0.2% hits=8/10 sched_to_best=31797 t_best=0.044s
+J30_45_6.dzn   BRKGA    ref=129 best=129 mean=129.4 RPDmed=0.31% hits=8/10 sched_to_best=26420 t_best=0.045s
+J30_45_6.dzn   GA       ref=129 best=129 mean=129 RPDmed=0.0% hits=10/10 sched_to_best=30361 t_best=0.052s
+J30_45_6.dzn   RKO      ref=129 best=129 mean=129 RPDmed=0.0% hits=10/10 sched_to_best=27856 t_best=0.045s
+J30_9_2.dzn    BRKGA    ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=14590 t_best=0.028s
+J30_9_2.dzn    GA       ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=16484 t_best=0.027s
+J30_9_2.dzn    RKO      ref=92 best=92 mean=92 RPDmed=0.0% hits=10/10 sched_to_best=18838 t_best=0.027s
+J60_21_4.dzn   BRKGA    ref=95 best=103 mean=103.9 RPDmed=9.37% hits=0/10 sched_to_best=34872 t_best=0.11s
+J60_21_4.dzn   GA       ref=95 best=101 mean=102 RPDmed=7.37% hits=0/10 sched_to_best=35247 t_best=0.114s
+J60_21_4.dzn   RKO      ref=95 best=100 mean=102.7 RPDmed=8.11% hits=0/10 sched_to_best=30742 t_best=0.093s
+J60_37_2.dzn   BRKGA    ref=95 best=100 mean=101.9 RPDmed=7.26% hits=0/10 sched_to_best=35733 t_best=0.108s
+J60_37_2.dzn   GA       ref=95 best=99 mean=101.3 RPDmed=6.63% hits=0/10 sched_to_best=29345 t_best=0.09s
+J60_37_2.dzn   RKO      ref=95 best=100 mean=102.5 RPDmed=7.89% hits=0/10 sched_to_best=18563 t_best=0.059s
+J60_41_7.dzn   BRKGA    ref=132 best=146 mean=148.7 RPDmed=12.65% hits=0/10 sched_to_best=20698 t_best=0.076s
+J60_41_7.dzn   GA       ref=132 best=141 mean=146.4 RPDmed=10.91% hits=0/10 sched_to_best=34228 t_best=0.114s
+J60_41_7.dzn   RKO      ref=132 best=138 mean=145.4 RPDmed=10.15% hits=0/10 sched_to_best=27440 t_best=0.092s
+J60_5_4.dzn    BRKGA    ref=72 best=77 mean=78.8 RPDmed=9.44% hits=0/10 sched_to_best=30717 t_best=0.105s
+J60_5_4.dzn    GA       ref=72 best=76 mean=78 RPDmed=8.33% hits=0/10 sched_to_best=38014 t_best=0.119s
+J60_5_4.dzn    RKO      ref=72 best=77 mean=78.6 RPDmed=9.17% hits=0/10 sched_to_best=34350 t_best=0.108s
+J60_9_4.dzn    BRKGA    ref=87 best=96 mean=98.5 RPDmed=13.22% hits=0/10 sched_to_best=38217 t_best=0.121s
+J60_9_4.dzn    GA       ref=87 best=96 mean=97.6 RPDmed=12.18% hits=0/10 sched_to_best=37412 t_best=0.118s
+J60_9_4.dzn    RKO      ref=87 best=96 mean=98 RPDmed=12.64% hits=0/10 sched_to_best=33928 t_best=0.106s
+
+| Instância | Ótimo | GA RPD médio (acertos) | BRKGA RPD médio (acertos) | RKO RPD médio (acertos) |
+|---|---:|---:|---:|---:|
+| J30_13_1 | 58 | 5.52% (0/10) | 6.38% (0/10) | 5.86% (0/10) |
+| J30_14_2 | 53 | 2.08% (0/10) | 1.70% (1/10) | 2.08% (0/10) |
+| J30_1_1 | 43 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_25_4 | 81 | 2.35% (0/10) | 2.96% (0/10) | 2.22% (0/10) |
+| J30_29_8 | 80 | 4.63% (0/10) | 5.12% (0/10) | 4.38% (0/10) |
+| J30_30_2 | 68 | 3.68% (0/10) | 3.38% (0/10) | 3.68% (0/10) |
+| J30_37_7 | 92 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J30_41_10 | 99 | 0.30% (7/10) | 0.81% (2/10) | 0.20% (8/10) |
+| J30_45_6 | 129 | 0.00% (10/10) | 0.31% (8/10) | 0.00% (10/10) |
+| J30_9_2 | 92 | 0.00% (10/10) | 0.00% (10/10) | 0.00% (10/10) |
+| J60_21_4 | 95 | 7.37% (0/10) | 9.37% (0/10) | 8.11% (0/10) |
+| J60_37_2 | 95 | 6.63% (0/10) | 7.26% (0/10) | 7.89% (0/10) |
+| J60_41_7 | 132 | 10.91% (0/10) | 12.65% (0/10) | 10.15% (0/10) |
+| J60_5_4 | 72 | 8.33% (0/10) | 9.44% (0/10) | 9.17% (0/10) |
+| J60_9_4 | 87 | 12.18% (0/10) | 13.22% (0/10) | 12.64% (0/10) |
+
+| Métrica | GA | BRKGA | RKO |
+|---|---:|---:|---:|
+| RPD médio (%) | 4.27 | 4.84 | 4.43 |
+| RPD da melhor execução (%) | 3.00 | 3.35 | 2.96 |
+| Execuções no ótimo | 47/150 (31%) | 41/150 (27%) | 48/150 (32%) |
+| Cronogramas até o melhor (média) | 26,437 | 26,211 | 23,849 |
+| Tempo até o melhor (s, média) | 0.06 | 0.06 | 0.05 |
+
+resultados em /home/otavio/repos/rcpsp-baterias/results/mh_20261103_0828_b50000_semFBI (tempo total 0.6 min)
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 77
+1.18249e+07 simplex iterations
+13637 branching nodes
+absmipgap=11, relmipgap=0.142857
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 58.31258279
+4974 simplex iterations
+j605_4     LIMIT    Cmax=  77 LB=      66 gap= 14.29% LP=  58.313 t=  600.1s ref=72 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 92
+9.16537e+06 simplex iterations
+11506 branching nodes
+absmipgap=9, relmipgap=0.0978261
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 72.90854713
+5388 simplex iterations
+j609_4     LIMIT    Cmax=  92 LB=      83 gap=  9.78% LP=  72.909 t=  600.1s ref=87 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 96
+7.78821e+06 simplex iterations
+17467 branching nodes
+absmipgap=6, relmipgap=0.0625
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 73.04487366
+5506 simplex iterations
+j6021_4    LIMIT    Cmax=  96 LB=    90.0 gap=  6.25% LP=  73.045 t=  600.1s ref=95 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 96
+7.79137e+06 simplex iterations
+12013 branching nodes
+absmipgap=8, relmipgap=0.0833333
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 72.34281654
+5814 simplex iterations
+j6037_2    LIMIT    Cmax=  96 LB=      88 gap=  8.33% LP=  72.343 t=  600.1s ref=95 [ok]
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: time limit, feasible solution; objective 147
+2.53577e+06 simplex iterations
+1633 branching nodes
+absmipgap=23, relmipgap=0.156463
+
+suffix bestbound OUT;
+Gurobi 13.0.3:   lim:time = 600
+  mip:bestbound = 1
+Gurobi 13.0.3: optimal solution; objective 109.1887789
+9589 simplex iterations
+j6041_7    LIMIT    Cmax= 147 LB=     124 gap= 15.65% LP= 109.189 t=  600.1s ref=132 [ok]
+
+5 instancias -> /home/otavio/repos/rcpsp-baterias/results/exact_selecao_j60_gurobi_D.csv
+== fim ter 03 nov 2026 09:19:17 -03 (status 0)

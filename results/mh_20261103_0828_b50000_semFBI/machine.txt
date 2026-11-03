@@ -1,0 +1,12 @@
+data: 2026-11-03T08:28:17
+CPU: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz
+threads logicas: 8
+sistema: Linux-7.0.0-42-generic-x86_64-with-glibc2.39
+metodos: GA BRKGA RKO
+conjuntos: selecao_j30 selecao_j60
+execucoes: 10
+tempo J30: 120 s
+tempo J60: 120 s
+controle: 0
+orcamento: 50000 cronogramas por execucao
+decoder: chaves -> lista topologica -> SSGS (sem FBI); parada no otimo conhecido
