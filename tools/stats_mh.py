@@ -68,9 +68,11 @@ def block(R, insts, title):
     adj = holm(ps)
     L += ["", "Wilcoxon pareado por instância (15 instâncias), p bruto → p ajustado (Holm): " +
           "; ".join(f"{a}×{b}: {p:.3f} → {q:.3f}" for (a, b), p, q in zip(pairs, ps, adj)), ""]
-    rate = {m: st.mean(x["sched"] / x["tt"] for i in insts for x in R[(i, m)] if x["tt"] > 0.5) for m in METHODS}
-    L.append("Cronogramas avaliados por segundo (9 threads): " +
-             ", ".join(f"{m} {rate[m]:,.0f}".replace(",", ".") for m in METHODS) + ".")
+    tot = {m: (sum(x["sched"] for i in insts for x in R[(i, m)]), sum(x["tt"] for i in insts for x in R[(i, m)]))
+           for m in METHODS}
+    if all(t > 0 for _, t in tot.values()):
+        L.append("Cronogramas avaliados por segundo (9 threads): " +
+                 ", ".join(f"{m} {c / t:,.0f}".replace(",", ".") for m, (c, t) in tot.items()) + ".")
     return L
 
 

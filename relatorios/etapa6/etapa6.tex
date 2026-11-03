@@ -1,0 +1,154 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{microtype}
+\usepackage[compact]{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\titlespacing*{\section}{0pt}{0.9em}{0.4em}
+\captionsetup{font=small,labelfont=bf}
+\setlist{nosep,leftmargin=1.4em}
+\setlength{\parskip}{0.25em}
+\pagestyle{plain}
+
+\newcommand{\cmax}{C_{\max}}
+
+\begin{document}
+
+\noindent{\LARGE\bfseries Otimização do Sequenciamento na Produção de Baterias:\\[2pt] Abordagem via RCPSP}\\[6pt]
+{\bfseries Etapa 6: Resultados do Método Aproximado (Metaheurística)}\\
+Cristian Madeira (Pós), Otávio Novais (162962), Thaís Melo (164934)
+
+\section*{Configuração dos experimentos}
+
+O método aproximado é o RKO (\emph{Random-Key Optimizer}) \cite{rko}, na implementação C++ dos
+autores, sem alterações, com um decodificador próprio para o RCPSP: o vetor de chaves gera uma
+lista de prioridade topologicamente válida (a cada passo, a atividade elegível de menor chave),
+convertida em cronograma pelo SSGS e melhorada pelo \emph{forward-backward improvement} (FBI)
+\cite{valls}. O RKO executa nove metaheurísticas em paralelo (BRKGA, SA, GRASP, ILS, VNS, PSO, GA,
+LNS e BRKGA-CS), que compartilham um conjunto de soluções de elite, com os parâmetros padrão do
+framework. Foram usados dois critérios de parada:
+
+\begin{itemize}
+  \item \textbf{Tempo:} 10~s por execução no J30 e 30~s no J60.
+  \item \textbf{Orçamento de 50.000 cronogramas} (decodificações, somadas entre as threads), o
+        critério usual da literatura \cite{kolisch}. A criação do conjunto inicial de soluções
+        consome cerca de 10.800 cronogramas no J30 e 21.600 no J60, igual para todos os métodos.
+\end{itemize}
+
+Em ambos, a execução também termina ao atingir o ótimo conhecido. Cada instância foi resolvida
+10 vezes, no mesmo notebook da Etapa~5 (Intel Core i5-1135G7, 16~GB). Às dez instâncias J30 da
+Etapa~5 somaram-se cinco J60 com $RS = 0{,}2$ e ótimo conhecido, também resolvidas pelo Gurobi
+com 600~s. A qualidade é medida pelo desvio relativo ao ótimo, RPD $= 100\,(\cmax - C^*)/C^*$.
+
+\section*{Exato $\times$ aproximado}
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4.3pt}
+\caption{Gurobi (Etapa 5) e RKO nas mesmas instâncias. RKO: melhor e médio $\cmax$ em 10 execuções e tempo médio por execução.}
+\label{tab:exato-rko}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & & \multicolumn{2}{c}{Gurobi (600 s)} & \multicolumn{3}{c}{RKO, tempo (10 s / 30 s)} & \multicolumn{3}{c}{RKO, 50.000 cronogramas} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Instância & $C^*$ & $\cmax$ & Tempo (s) & Melhor & Médio & Tempo (s) & Melhor & Médio & Tempo (s) \\
+\midrule
+% linhas geradas por relatorios/etapa6/gera_tabela.py
+j301\_1 & 43 & \textbf{43} & 0,1 & \textbf{43} & 43,0 & 0,10 & \textbf{43} & 43,0 & 0,09 \\
+j309\_2 & 92 & \textbf{92} & 286,5 & \textbf{92} & 92,0 & 0,12 & \textbf{92} & 92,0 & 0,11 \\
+j3013\_1 & 58 & 59$^\dagger$ & 600,1 & \textbf{58} & 58,3 & 5,70 & 60 & 60,0 & 0,28 \\
+j3025\_4 & 81 & \textbf{81} & 242,8 & \textbf{81} & 81,8 & 8,98 & 82 & 82,0 & 0,26 \\
+j3029\_8 & 80 & 81$^\dagger$ & 600,1 & 81 & 81,0 & 10,20 & 82 & 82,0 & 0,33 \\
+j3037\_7 & 92 & \textbf{92} & 40,9 & \textbf{92} & 92,0 & 0,11 & \textbf{92} & 92,0 & 0,10 \\
+j3041\_10 & 99 & \textbf{99} & 165,7 & \textbf{99} & 99,0 & 0,14 & \textbf{99} & 99,0 & 0,12 \\
+j3045\_6 & 129 & \textbf{129}$^\dagger$ & 600,1 & \textbf{129} & 129,0 & 0,15 & \textbf{129} & 129,0 & 0,13 \\
+j3014\_2 & 53 & \textbf{53} & 51,0 & \textbf{53} & 53,0 & 0,12 & \textbf{53} & 53,0 & 0,11 \\
+j3030\_2 & 68 & \textbf{68} & 6,0 & \textbf{68} & 68,0 & 0,57 & \textbf{68} & 68,4 & 0,21 \\
+\midrule
+j605\_4 & 72 & 77$^\dagger$ & 600,1 & \textbf{72} & 72,5 & 22,43 & 73 & 74,4 & 0,84 \\
+j609\_4 & 87 & 92$^\dagger$ & 600,1 & 88 & 88,5 & 30,80 & 90 & 91,0 & 0,94 \\
+j6021\_4 & 95 & 96$^\dagger$ & 600,1 & \textbf{95} & 95,0 & 3,71 & 98 & 99,0 & 0,74 \\
+j6037\_2 & 95 & 96$^\dagger$ & 600,1 & 96 & 96,0 & 30,60 & 97 & 97,0 & 0,69 \\
+j6041\_7 & 132 & 147$^\dagger$ & 600,1 & 134 & 134,0 & 30,71 & 137 & 138,5 & 0,84 \\
+\midrule
+RPD / tempo J30 & & 0,30\% & 259,3 & 0,12\% & 0,28\% & 2,62 & 0,72\% & 0,78\% & 0,17 \\
+RPD / tempo J60 & & 5,23\% & 600,1 & 0,74\% & 1,00\% & 23,65 & 2,78\% & 3,83\% & 0,81 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.97\textwidth}\footnotesize
+Em negrito: igual ao ótimo $C^*$. $^\dagger$: limite de tempo atingido, sem prova de otimalidade.
+Últimas linhas: RPD médio de cada coluna de $\cmax$ e tempo médio, por conjunto.
+\end{minipage}
+\end{table}
+
+\textbf{J30.} Os dois métodos chegam à mesma qualidade, mas o RKO é cerca de 100 vezes mais
+rápido: RPD médio de 0,28\% em 2,6~s por execução, contra 0,30\% do Gurobi em 259~s. Em j3013\_1,
+o RKO atingiu o ótimo (58), enquanto o Gurobi terminou em 59. Em j3029\_8, nenhum dos dois
+chegou ao ótimo (80). A vantagem do método exato é a prova de otimalidade, obtida em 7 das 10
+instâncias.
+
+\textbf{J60.} O Gurobi não provou a otimalidade de nenhuma instância em 600~s, com RPD médio de
+5,2\% (até 11,4\% em j6041\_7: 147 contra o ótimo 132). Com 30~s, o RKO obteve RPD médio de 1,0\%,
+igual ou melhor que o Gurobi nas cinco instâncias e no ótimo em j605\_4 e j6021\_4. Mesmo limitado
+a 50.000 cronogramas (menos de 1~s), o RKO supera o Gurobi em 3 das 5 instâncias, com RPD médio de
+3,8\%. O ganho do método aproximado cresce com o tamanho, como esperado para a formulação
+tempo-indexada, cujo número de variáveis acompanha o produto entre atividades e horizonte.
+
+\section*{Comparação entre estratégias de busca}
+
+Para avaliar a observação de que algoritmos genéticos têm dificuldade neste problema, o GA e o
+BRKGA \cite{brkga} do mesmo framework foram executados isoladamente, com o mesmo decodificador,
+com e sem o FBI.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{RPD médio (\%) nas 15 instâncias, 10 execuções cada; $p$: teste de Friedman entre os três métodos.}
+\label{tab:busca}
+\begin{tabular}{llrrrr}
+\toprule
+Critério de parada & Decodificador & GA & BRKGA & RKO & $p$ \\
+\midrule
+Tempo (10 s / 30 s) & SSGS + FBI & 0,50 & 0,49 & 0,52 & 0,81 \\
+                    & Só SSGS    & 0,95 & 1,03 & 0,82 & 0,12 \\
+50.000 cronogramas  & SSGS + FBI & 1,71 & 1,81 & 1,80 & 0,27 \\
+                    & Só SSGS    & 4,26 & 4,84 & 4,43 & 0,04 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Com o FBI, os três métodos são estatisticamente equivalentes nos dois critérios. A única diferença
+significativa aparece sem o FBI e com orçamento fixo: o GA supera o BRKGA (Wilcoxon com correção
+de Holm, $p = 0{,}02$), e o RKO fica entre os dois. A dificuldade esperada do GA, portanto, não se
+confirmou quando ele usa a mesma representação e o mesmo decodificador. Uma explicação provável
+para o desempenho do BRKGA é o orçamento: o framework divide os cronogramas entre nove cópias
+paralelas, e, com a população padrão de 987 indivíduos, cada cópia do BRKGA faz só 3 a 4 gerações,
+contra 8 a 11 do GA (população de 400). Os parâmetros não foram calibrados para esse orçamento, o
+que limita a conclusão. O fator de maior efeito é o decodificador: o FBI reduz o RPD médio de
+1,8--2,1\% para 0,7--0,8\% no J30 e de 9,1--10,4\% para 3,6--4,1\% no J60 com orçamento fixo
+($p < 0{,}001$ nos três métodos).
+
+\textbf{Síntese.} Para instâncias pequenas, o modelo exato entrega o ótimo com prova, a um custo de
+minutos. Para instâncias maiores, o RKO encontra soluções melhores em segundos. O RKO será a
+metaheurística do artigo, com o GA e o BRKGA como referência de comparação.
+
+\vspace{-0.6em}
+{\scriptsize
+\renewcommand{\refname}{\normalsize Referências}
+\begin{thebibliography}{9}\setlength{\itemsep}{0pt}
+\bibitem{rko} Chaves, A. A. et al. A random-key optimizer for combinatorial optimization. \emph{Journal of Heuristics}, 31(4), 2025.
+\bibitem{brkga} Gonçalves, J. F.; Resende, M. G. C. Biased random-key genetic algorithms for combinatorial optimization. \emph{Journal of Heuristics}, 17(5):487--525, 2011.
+\bibitem{kolisch} Kolisch, R.; Hartmann, S. Experimental investigation of heuristics for resource-constrained project scheduling: an update. \emph{European Journal of Operational Research}, 174(1):23--37, 2006.
+\bibitem{valls} Valls, V.; Ballestín, F.; Quintanilla, S. Justification and RCPSP: a technique that pays. \emph{European Journal of Operational Research}, 165(2):375--386, 2005.
+\end{thebibliography}}
+
+\end{document}

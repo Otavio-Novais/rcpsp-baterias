@@ -243,7 +243,7 @@ O "GA" aqui é o algoritmo genético do framework RKO (chaves aleatórias + o me
 | 3 | Apresentação dos dados | entregue (citar a instância como `j301_1`) |
 | 4 | Proposta de solução | entregue (metaheurística passa a ser o RKO) |
 | 5 | Resultados do método exato | **PDF pronto** (`relatorios/etapa5/etapa5.pdf`): Gurobi 600 s, 7/10 ótimos provados, Cmax = ótimo em 8/10 |
-| — | Metaheurística (RKO) | experimento rodado (com e sem FBI, i5-1135G7); análise em `results/analise_metaheuristicas.md` (`tools/stats_mh.py`) |
+| 6 | Exato × metaheurística | **PDF pronto** (`relatorios/etapa6/etapa6.pdf`): RKO por tempo e com 50.000 cronogramas, Gurobi no J60; análises em `results/analise_metaheuristicas*.md` |
 | — | Artigo SBPO + apresentação | a fazer |
 
 Próximos passos:

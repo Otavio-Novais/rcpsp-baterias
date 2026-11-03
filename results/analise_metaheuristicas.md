@@ -10,7 +10,7 @@
 
 Wilcoxon pareado por instância (15 instâncias), p bruto → p ajustado (Holm): RKO×GA: 0.285 → 0.855; RKO×BRKGA: 1.000 → 1.000; GA×BRKGA: 1.000 → 1.000
 
-Cronogramas avaliados por segundo (9 threads): GA 141.733, BRKGA 125.387, RKO 141.091.
+Cronogramas avaliados por segundo (9 threads): GA 115.645, BRKGA 107.605, RKO 118.157.
 
 ### Decoder sem FBI (só SSGS)
 
@@ -22,7 +22,7 @@ Cronogramas avaliados por segundo (9 threads): GA 141.733, BRKGA 125.387, RKO 14
 
 Wilcoxon pareado por instância (15 instâncias), p bruto → p ajustado (Holm): RKO×GA: 0.046 → 0.128; RKO×BRKGA: 0.043 → 0.128; GA×BRKGA: 0.575 → 0.575
 
-Cronogramas avaliados por segundo (9 threads): GA 641.557, BRKGA 610.563, RKO 741.978.
+Cronogramas avaliados por segundo (9 threads): GA 548.211, BRKGA 504.853, RKO 619.271.
 
 ### Efeito do FBI (Mann-Whitney, todas as execuções)
 
