@@ -2,9 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[brazil]{babel}
-\usepackage[margin=1.8cm]{geometry}
-\usepackage[compact]{titlesec}
-\titlespacing*{\section}{0pt}{0.9em}{0.4em}
+\usepackage[margin=2cm]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{enumitem}
@@ -14,7 +12,7 @@
 
 \captionsetup{font=small,labelfont=bf}
 \setlist{nosep,leftmargin=1.4em}
-\setlength{\parskip}{0.2em}
+\setlength{\parskip}{0.35em}
 \pagestyle{plain}
 
 \newcommand{\cmax}{C_{\max}}
@@ -37,8 +35,8 @@ de soluções ótimas:
 \begin{itemize}
   \item \textbf{Precedência desagregada:} para cada arco $(i,j)$ e período $t$,
         $\sum_{s \le t} x_{js} \le \sum_{s \le t-p_i} x_{is}$ \cite{christofides}. Em testes
-        preliminares (HiGHS, 60~s), deu limitantes inferiores melhores que a forma agregada em 8 das
-        10 instâncias (iguais nas outras duas).
+        preliminares (HiGHS, 60~s por instância), essa forma produziu limitantes inferiores melhores que a
+        forma agregada em 8 das 10 instâncias (e iguais nas outras duas).
   \item \textbf{Horizonte e janelas:} $H$ é o menor makespan obtido pelo SSGS com sete regras de
         prioridade (LFT, LST, MSLK, MTS, GRPW, LPT, MIS) seguido de \emph{forward-backward
         improvement} \cite{valls}. As variáveis $x_{jt}$ só existem para $t \in [ES_j, LS_j]$,
@@ -52,8 +50,9 @@ Foram usadas dez instâncias do J30 da PSPLIB \cite{psplib}: j301\_1 (a instânc
 Etapa~3, cujo arquivo-base no gerador se chama j30\_17) e nove instâncias dos grupos mais difíceis,
 uma por grupo, todas com recursos escassos ($RS = 0{,}2$ ou $0{,}5$). Nos grupos com $RS \ge 0{,}7$,
 o ótimo praticamente coincide com o limitante trivial (caminho crítico ou carga de recurso), e os
-métodos não se diferenciam. Os ótimos de referência $C^*$ foram provados com o CP-SAT (OR-Tools). Todas as
-soluções do Gurobi passaram por uma verificação independente do modelo (precedência, capacidade e makespan).
+métodos não se diferenciam. Os ótimos de referência $C^*$ foram obtidos com o CP-SAT (OR-Tools),
+com otimalidade provada. Cada solução retornada pelo Gurobi foi conferida por uma rotina
+independente do modelo (precedência, capacidade e makespan): todas foram aprovadas.
 
 \section*{Resultados}
 
@@ -84,7 +83,8 @@ Média & & & & & & & & & 2,52 & & 7/10 & 259,3 \\
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.97\textwidth}\footnotesize
-$RF$, $RS$: fator e força de recurso (ProGen). Var./Restr.: variáveis binárias e restrições. $H$: horizonte (heurística). LP: relaxação linear.
+$RF$, $RS$: fator e força de recurso do gerador ProGen (todas as instâncias têm $NC \in \{1{,}5;\,1{,}8;\,2{,}1\}$).
+Var./Restr.: variáveis binárias e restrições. $H$: horizonte (heurística). LP: relaxação linear.
 $\cmax$: melhor solução inteira (em negrito quando igual a $C^*$). LB: melhor limitante inferior.
 Gap $= (\cmax - \text{LB})/\cmax$. $C^*$: ótimo de referência. Status: ótimo provado ou limite de tempo.
 \end{minipage}
@@ -102,71 +102,30 @@ resolvidas).
 
 \textbf{Onde o modelo encontra dificuldade.} As três instâncias não resolvidas são exatamente as
 dos grupos com $RF = 1{,}0$ e $RS = 0{,}2$: todas as atividades usam os quatro recursos, e esses
-recursos são escassos. A relaxação linear fica, em média, 22\% abaixo do ótimo, mas esse
-afastamento não explica sozinho a dificuldade: j3037\_7 (37\%) foi resolvida em 41~s, enquanto
-j3013\_1 (17\%) não foi, o que indica que o fator de recurso pesa mais que a fraqueza da relaxação.
+recursos são escassos, o que multiplica os conflitos de capacidade. A relaxação linear fica, em
+média, 22\% abaixo do ótimo (até 37\% em j3037\_7), o que obriga o solver a enumerar muitos nós.
+Esse afastamento, porém, não explica sozinho a dificuldade: j3037\_7 foi resolvida em 41~s,
+enquanto j3013\_1, com afastamento de 17\%, não foi. Isso indica que o fator de recurso pesa mais
+que a fraqueza da relaxação.
 
-\textbf{Contribuição da heurística.} O horizonte $H$ do SSGS ficou, em média, 7\% acima do ótimo,
-e o solver melhorou essa solução inicial em todas as instâncias (de 2 a 8 unidades de tempo).
-
-\section*{Comparação preliminar com as metaheurísticas}
-
-Para situar o método exato e responder à questão levantada em sala sobre o desempenho de
-algoritmos genéticos neste problema, as mesmas instâncias foram resolvidas com três metaheurísticas
-do framework RKO (\emph{Random-Key Optimizer}) \cite{rko}: o algoritmo genético por chaves
-aleatórias (GA), o BRKGA \cite{brkga} e o RKO completo, que executa nove metaheurísticas em
-paralelo. Os três usam o mesmo decodificador (chaves $\to$ lista de prioridade $\to$ SSGS, com ou
-sem FBI), com 10 execuções por instância (10~s no J30; 30~s em cinco instâncias J60 com $RS = 0{,}2$),
-na mesma máquina e com parada ao atingir o ótimo.
-
-\begin{table}[ht]
-\centering
-\small
-\caption{Metaheurísticas: RPD médio $= 100\,(\cmax - C^*)/C^*$ e execuções que atingiram $C^*$.}
-\label{tab:mh}
-\begin{tabular}{llrrr}
-\toprule
-Decodificador & Método & RPD J30 (\%) & RPD J60 (\%) & Execuções no ótimo \\
-\midrule
-SSGS + FBI & GA    & 0,29 & 0,92 & 94/150 \\
-           & BRKGA & 0,24 & 1,00 & 95/150 \\
-           & RKO   & 0,28 & 1,00 & 94/150 \\
-\midrule
-Só SSGS    & GA    & 0,43 & 2,00 & 79/150 \\
-           & BRKGA & 0,51 & 2,07 & 70/150 \\
-           & RKO   & \textbf{0,38} & \textbf{1,69} & \textbf{86/150} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\vspace{-0.4em}
-\textbf{Métodos de busca.} Com o FBI, os três métodos são estatisticamente equivalentes
-(Friedman, $p = 0{,}81$): quando o GA usa a mesma representação e o mesmo decodificador, não se
-observa a dificuldade esperada. Sem o FBI, o RKO obtém os melhores valores, mas a diferença não é
-significativa após a correção para comparações múltiplas (Wilcoxon com Holm, $p = 0{,}13$). O fator
-de maior efeito é o decodificador: no J60, o FBI reduz o RPD médio de 1,7--2,1\% para 0,9--1,0\% nos três
-métodos ($p < 0{,}01$). Uma limitação é o orçamento: em 10--30~s cada execução avalia milhões de
-cronogramas, muito acima dos 5.000 a 50.000 usados na literatura, o que tende a aproximar os métodos.
-
-\textbf{Exato $\times$ metaheurística.} No J30, a melhor solução do RKO é igual ou melhor que a do
-Gurobi nas dez instâncias, obtida em 0,58~s em média, contra 259~s do Gurobi. Em j3013\_1, o RKO
-alcançou o ótimo (58) em 7 das 10 execuções, enquanto o Gurobi terminou em 59 após 600~s; em
-j3029\_8, nenhum dos dois atingiu o ótimo (80). A vantagem do método exato está na prova de
-otimalidade, obtida em 7 das 10 instâncias.
+\textbf{Contribuição da heurística.} O horizonte $H$ fornecido pelo SSGS ficou, em média, 7\%
+acima do ótimo, e o solver melhorou essa solução inicial em todas as instâncias (de 2 a 8
+unidades de tempo). Assim, as janelas reduzem o modelo sem eliminar o ótimo, e o método exato
+agrega valor sobre a heurística construtiva.
 
 \textbf{Implicações.} O modelo exato é adequado para o J30, mas não garante a prova de otimalidade
-em 600~s quando os recursos são mais disputados. O RKO será adotado como metaheurística do trabalho,
-e a comparação será repetida com orçamento fixo de cronogramas, como na literatura.
+em 600~s quando os recursos são mais disputados. Como o número de variáveis cresce com o produto
+entre o número de atividades e o horizonte, espera-se que instâncias maiores (J60) sejam ainda mais
+difíceis. A próxima etapa compara esses resultados com a metaheurística, nas mesmas instâncias e em
+instâncias J60.
 
 \vspace{-0.6em}
-{\scriptsize
+{\footnotesize
 \renewcommand{\refname}{\normalsize Referências}
 \begin{thebibliography}{9}\setlength{\itemsep}{0pt}
-\bibitem{christofides} Christofides, N. et al. Project scheduling with resource constraints: a branch and bound approach. \emph{European Journal of Operational Research}, 29(3):262--273, 1987.
+\bibitem{christofides} Christofides, N.; Alvarez-Valdés, R.; Tamarit, J. M. Project scheduling with resource constraints: a branch and bound approach. \emph{European Journal of Operational Research}, 29(3):262--273, 1987.
 \bibitem{psplib} Kolisch, R.; Sprecher, A. PSPLIB -- a project scheduling problem library. \emph{European Journal of Operational Research}, 96(1):205--216, 1997.
-\bibitem{pritsker} Pritsker, A. A. B. et al. Multiproject scheduling with limited resources: a zero-one programming approach. \emph{Management Science}, 16(1):93--108, 1969.
-\bibitem{rko} Chaves, A. A. et al. A random-key optimizer for combinatorial optimization. \emph{Journal of Heuristics}, 31(4), 2025.
-\bibitem{brkga} Gonçalves, J. F.; Resende, M. G. C. Biased random-key genetic algorithms for combinatorial optimization. \emph{Journal of Heuristics}, 17(5):487--525, 2011.
+\bibitem{pritsker} Pritsker, A. A. B.; Watters, L. J.; Wolfe, P. M. Multiproject scheduling with limited resources: a zero-one programming approach. \emph{Management Science}, 16(1):93--108, 1969.
 \bibitem{valls} Valls, V.; Ballestín, F.; Quintanilla, S. Justification and RCPSP: a technique that pays. \emph{European Journal of Operational Research}, 165(2):375--386, 2005.
 \end{thebibliography}}
 
