@@ -34,6 +34,8 @@ tools/
 results/
   reference_j30.csv          ótimos/limitantes de referência das 480 J30
   reference_j60.csv          idem para as 480 J60 (409 ótimos provados; 71 só com limitantes)
+graficos/
+  gera_graficos.py           figuras dos resultados (PDF + PNG) a partir de results/
 ```
 
 O restante do framework RKO **não foi alterado**: a implementação do RCPSP está toda em `Problem.h`.

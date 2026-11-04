@@ -4,3 +4,6 @@ amplpy
 ortools
 highspy
 numpy
+# estatistica e graficos (tools/stats_mh.py, graficos/)
+scipy
+matplotlib
