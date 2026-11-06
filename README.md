@@ -7,6 +7,7 @@
 ![Python](https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white)
 ![AMPL](https://img.shields.io/badge/AMPL-amplpy-1F5F8B)
 ![Gurobi](https://img.shields.io/badge/solver-Gurobi-EE3524)
+![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-green)
 
 Projeto da disciplina de **Otimização Discreta** (UNIFESP). A linha de montagem de baterias de veículos elétricos é modelada como um *Resource-Constrained Project Scheduling Problem* (RCPSP): atividades com precedência e recursos renováveis limitados, e o objetivo de minimizar o *makespan*. O mesmo conjunto de instâncias é resolvido por um modelo exato e por uma metaheurística, e os dois são comparados em qualidade e tempo.
 
@@ -125,6 +126,8 @@ Argumentos do RKO, opções de compilação do decoder, formato dos cenários e 
 | 8 | Artigo no formato SBPO | em andamento — 07/12 |
 
 ## Créditos e licenças
+
+O código deste repositório está sob a [licença MIT](LICENSE). O framework RKO em `rko/` mantém a licença MIT dos autores originais.
 
 - **RKO:** Chaves, A.A.; Resende, M.G.C.; Schuetz, M.J.A.; Brubaker, J.K.; Katzgraber, H.G.; Arruda, E.F.; Silva, R.M.A. *A Random-Key Optimizer for Combinatorial Optimization*. Journal of Heuristics, 31(4), 2025. Código original: <https://github.com/RKO-solver/RKO_Cpp_v1.0> (MIT, ver [`rko/LICENSE`](rko/LICENSE)).
 - **Instâncias:** PSPLIB (Kolisch & Sprecher, 1997). Os `.dzn` vêm de [MiniZinc/minizinc-benchmarks](https://github.com/MiniZinc/minizinc-benchmarks) (MIT) e `j301_1.sm` de [PyJobShop/PSPLIB](https://github.com/PyJobShop/PSPLIB) (MIT).
